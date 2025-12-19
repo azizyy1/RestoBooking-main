@@ -1,0 +1,23 @@
+@model RestoBooking.Models.Reservation
+
+@{
+    ViewData["Title"] = "Supprimer la réservation";
+}
+
+<h2>Supprimer la réservation</h2>
+
+<div class="alert alert-danger">
+    <p>Es-tu sûr de vouloir supprimer cette réservation ?</p>
+</div>
+
+<ul>
+    <li><strong>Client :</strong> @Model.CustomerName</li>
+    <li><strong>Date :</strong> @Model.ReservationDate.ToString("dd/MM/yyyy HH:mm")</li>
+    <li><strong>Table :</strong> @Model.Table?.Name</li>
+</ul>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Supprimer</button>
+    <a asp-action="Admin" class="btn btn-secondary ms-2">Annuler</a>
+</form>

@@ -1,0 +1,43 @@
+@model RestoBooking.Models.Reservation
+@{
+    ViewData["Title"] = "Réservation confirmée";
+    var tablePrice = ViewBag.TablePrice as decimal? ?? 0m;
+    var occasionPrice = ViewBag.OccasionPrice as decimal? ?? 0m;
+    var tableLabel = ViewBag.TableCategoryLabel as string ?? string.Empty;
+    var occasionLabel = ViewBag.OccasionLabel as string ?? string.Empty;
+}
+
+<div class="success-wrapper">
+    <h1 class="success-title">Merci !</h1>
+    <p class="success-text">
+       Votre réservation a été enregistrée avec succès. Voici votre facture détaillée :
+    </p>
+     <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Détails de la réservation</h5>
+            <ul class="list-unstyled mb-0">
+                <li><strong>Client :</strong> @Model.CustomerName (@Model.CustomerEmail)</li>
+                <li><strong>Téléphone :</strong> @Model.CustomerPhone</li>
+                <li><strong>Date et heure :</strong> @Model.ReservationDate.ToString("dd/MM/yyyy HH:mm")</li>
+                <li><strong>Nombre de personnes :</strong> @Model.NumberOfPeople</li>
+                <li><strong>Table :</strong> @Model.Table?.Name (@tableLabel) – @tablePrice.ToString("0.00") DH / pers.</li>
+                <li><strong>Occasion :</strong> @occasionLabel – @occasionPrice.ToString("0.00") DH / pers.</li>
+                <li><strong>Notes :</strong> @(!string.IsNullOrWhiteSpace(Model.Notes) ? Model.Notes : "Aucune")</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Facture</h5>
+             <p class="mb-1">Prix par personne : @((tablePrice + occasionPrice).ToString("0.00")) DH</p>
+            <p class="mb-1">Total (@Model.NumberOfPeople personnes) : <strong>@Model.TotalPrice.ToString("0.00") DH</strong></p>
+            <p class="text-muted mb-0">Un email de confirmation professionnel vous a été envoyé avec ces informations.</p>
+        </div>
+    </div>
+
+    <a asp-controller="Home" asp-action="Index"
+       class="btn btn-secondary success-btn">
+        Retour à l'accueil
+    </a>
+</div>

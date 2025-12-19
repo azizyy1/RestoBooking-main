@@ -1,0 +1,56 @@
+@{
+    ViewData["Title"] = "Portfolio";
+}
+
+<section class="portfolio-hero text-center">
+    <div class="portfolio-hero-overlay"></div>
+    <div class="container position-relative">
+        <p class="portfolio-badge">Signature</p>
+        <h1 class="portfolio-title">Découvrez nos trois univers</h1>
+        <p class="portfolio-subtitle">
+            Un voyage gastronomique entre tradition marocaine, excellence italienne et art du grill.
+        </p>
+    </div>
+</section>
+
+<section class="portfolio-grid container">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <a class="portfolio-card" asp-controller="Home" asp-action="CuisineMarocaine"
+               style="--bg-image: url('https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=1600&q=80');">
+                    <div class="portfolio-card-overlay"></div>
+                    <div class="portfolio-card-content">
+                        <div class="portfolio-flag">🇲🇦</div>
+                        <h2 class="portfolio-card-title">L’Art de la Cuisine Marocaine</h2>
+                        <p class="portfolio-card-text">tradition, raffinement & héritage</p>
+                        <span class="portfolio-card-cta">Explorer</span>
+                    </div>
+          </a>
+            </article>
+        </div>
+        <div class="col-md-4">
+             <a class="portfolio-card" asp-controller="Home" asp-action="CuisineItalienne"
+               style="--bg-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80');">
+                <div class="portfolio-card-overlay"></div>
+                <div class="portfolio-card-content">
+                    <div class="portfolio-flag">🇮🇹</div>
+                    <h2 class="portfolio-card-title">L’Excellence de la Cuisine Italienne</h2>
+                    <p class="portfolio-card-text">authenticité, produits nobles & savoir-faire</p>
+                    <span class="portfolio-card-cta">Déguster</span>
+                </div>
+             </a>
+        </div>
+        <div class="col-md-4">
+            <a class="portfolio-card" asp-controller="Home" asp-action="Steakhouse"
+               style="--bg-image: url('https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=1600&q=80');">
+                <div class="portfolio-card-overlay"></div>
+                <div class="portfolio-card-content">
+                    <div class="portfolio-flag">🥩</div>
+                    <h2 class="portfolio-card-title">Le Steakhouse d’Exception</h2>
+                    <p class="portfolio-card-text">viandes premium, cuisson parfaite & prestige</p>
+                    <span class="portfolio-card-cta">Savourez</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>

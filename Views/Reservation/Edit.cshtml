@@ -1,0 +1,68 @@
+@using RestoBooking.Models
+@model RestoBooking.Models.Reservation
+
+@{
+    ViewData["Title"] = "Modifier la réservation";
+    var tables = ViewBag.Tables as List<Table>;
+}
+
+<h2>Modifier la réservation</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="CustomerName" class="form-label"></label>
+        <input asp-for="CustomerName" class="form-control" />
+        <span asp-validation-for="CustomerName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CustomerEmail" class="form-label"></label>
+        <input asp-for="CustomerEmail" class="form-control" />
+        <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CustomerPhone" class="form-label"></label>
+        <input asp-for="CustomerPhone" class="form-control" />
+        <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ReservationDate" class="form-label"></label>
+        <input asp-for="ReservationDate" type="datetime-local" class="form-control" />
+        <span asp-validation-for="ReservationDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="NumberOfPeople" class="form-label"></label>
+        <input asp-for="NumberOfPeople" class="form-control" />
+        <span asp-validation-for="NumberOfPeople" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TableId" class="form-label">Table</label>
+        <select asp-for="TableId" class="form-select">
+            @if (tables != null)
+            {
+                foreach (var t in tables)
+                {
+                    <option value="@t.Id" selected="@(t.Id == Model.TableId)">
+                        @t.Name (@t.Capacity personnes)
+                    </option>
+                }
+            }
+        </select>
+        <span asp-validation-for="TableId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a asp-action="Admin" class="btn btn-secondary ms-2">Annuler</a>
+</form>

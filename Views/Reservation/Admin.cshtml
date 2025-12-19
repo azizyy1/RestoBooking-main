@@ -1,0 +1,105 @@
+@using RestoBooking.Models
+@model IEnumerable<Reservation>
+
+@{
+    ViewData["Title"] = "Liste des réservations";
+    var tables = ViewBag.Tables as List<Table>;
+}
+
+<h2 class="mb-3">Liste des réservations</h2>
+
+<!-- Filtres -->
+<form method="get" asp-action="Admin" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label class="form-label">Date</label>
+        <input type="date" name="date" class="form-control" />
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Table</label>
+        <select name="tableId" class="form-select">
+            <option value="">-- Toutes les tables --</option>
+            @if (tables != null)
+            {
+                foreach (var t in tables)
+                {
+                    <option value="@t.Id">@t.Name (@t.Capacity personnes)</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+        <a asp-action="Admin" class="btn btn-secondary">Réinitialiser</a>
+    </div>
+</form>
+
+<!-- Tableau -->
+<table class="table table-striped table-bordered align-middle">
+    <thead>
+        <tr>
+            <th>Client</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Table</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th>Personnes</th>
+            <th>Notes</th>
+            <th>Total / Remboursement</th>
+            <th style="width: 220px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var r in Model)
+    {
+        <tr>
+            <td>@r.CustomerName</td>
+            <td>@r.CustomerEmail</td>
+            <td>@r.CustomerPhone</td>
+            <td>@r.Table?.Name</td>
+            <td>@r.ReservationDate.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>
+                @if (r.IsCancelled)
+                {
+                    <span class="badge text-bg-danger">Annulée</span>
+                    @if (r.CancelledAt.HasValue)
+                    {
+                        <div class="text-muted small">@r.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                    }
+                }
+                else if (r.ReservationDate >= DateTime.Now)
+                {
+                    <span class="badge text-bg-success">À venir</span>
+                }
+                else
+                {
+                    <span class="badge text-bg-secondary">Passée</span>
+                }
+            </td>
+            <td>@r.NumberOfPeople</td>
+            <td>@r.Notes</td>
+            <td>
+                <div><strong>@r.TotalPrice.ToString("0.00") DH</strong></div>
+                @if (r.IsCancelled)
+                {
+                    <div class="small text-danger">Frais (5%) : @r.CancellationFee.ToString("0.00") DH</div>
+                    <div class="small text-success">Remboursé : @r.RefundAmount.ToString("0.00") DH</div>
+                }
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info me-1">
+                    Voir
+                </a>
+                <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-warning me-1">
+                    Modifier
+                </a>
+                <a asp-action="Delete" asp-route-id="@r.Id" class="btn btn-sm btn-danger">
+                    Supprimer
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,45 @@
+@model RestoBooking.Models.Reservation
+
+@{
+    ViewData["Title"] = "Détails de la réservation";
+}
+
+<h2>Détails de la réservation</h2>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Client :</strong> @Model.CustomerName</p>
+        <p><strong>Email :</strong> @Model.CustomerEmail</p>
+        <p><strong>Téléphone :</strong> @Model.CustomerPhone</p>
+        <p><strong>Table :</strong> @Model.Table?.Name</p>
+        <p><strong>Date :</strong> @Model.ReservationDate.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Personnes :</strong> @Model.NumberOfPeople</p>
+        <p><strong>Notes :</strong> @Model.Notes</p>
+        <p><strong>Statut :</strong>
+            @if (Model.IsCancelled)
+            {
+                <span class="badge text-bg-danger">Annulée</span>
+                if (Model.CancelledAt.HasValue)
+                {
+                    <span class="text-muted"> (annulé le @Model.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))</span>
+                }
+            }
+            else if (Model.ReservationDate >= DateTime.Now)
+            {
+                <span class="badge text-bg-success">À venir</span>
+            }
+            else
+            {
+                <span class="badge text-bg-secondary">Passée</span>
+            }
+        </p>
+        <p><strong>Total :</strong> @Model.TotalPrice.ToString("0.00") DH</p>
+        @if (Model.IsCancelled)
+        {
+            <p><strong>Frais d'annulation :</strong> @Model.CancellationFee.ToString("0.00") DH</p>
+            <p><strong>Montant remboursé :</strong> @Model.RefundAmount.ToString("0.00") DH</p>
+        }
+    </div>
+</div>
+
+<a asp-action="Admin" class="btn btn-secondary mt-3">Retour à la liste</a>

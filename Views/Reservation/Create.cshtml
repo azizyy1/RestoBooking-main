@@ -1,0 +1,191 @@
+@model RestoBooking.Models.Reservation
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using RestoBooking.Models.ViewModels
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+}
+
+@{
+    ViewData["Title"] = "Réserver une table";
+     var tableOptions = ViewBag.TableOptions as IEnumerable<TableOptionViewModel> ?? Enumerable.Empty<TableOptionViewModel>();
+    var occasionOptions = ViewBag.Occasions as IEnumerable<OccasionOptionViewModel> ?? Enumerable.Empty<OccasionOptionViewModel>();
+    var groupedTableOptions = tableOptions
+        .GroupBy(t => t.CategoryLabel)
+        .OrderBy(g => g.Key);
+}
+
+<div class="reservation-wrapper">
+    <h2 class="reservation-title">Réserver une table</h2>
+
+    <form asp-action="Create" method="post" class="reservation-form">
+        <div class="mb-3">
+            <label asp-for="CustomerName" class="form-label"></label>
+            <input asp-for="CustomerName" class="form-control" />
+            <span asp-validation-for="CustomerName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CustomerPhone" class="form-label"></label>
+            <input asp-for="CustomerPhone" class="form-control" />
+            <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CustomerEmail" class="form-label"></label>
+            <input asp-for="CustomerEmail" class="form-control" />
+            <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+        <label asp-for="ReservationDate" class="form-label">Date</label>
+            <input asp-for="ReservationDate"
+                   id="ReservationDate"
+                   type="text"
+                   class="form-control"
+                   placeholder="Choisissez une date"
+                   readonly />
+            <span asp-validation-for="ReservationDate" class="text-danger"></span>
+        </div>
+
+
+         <div class="mb-3">
+            <label asp-for="ReservationTime" class="form-label">Heure</label>
+
+            <input asp-for="ReservationTime"
+               id="ReservationTime"
+                   type="text"
+                   class="form-control"
+                     placeholder="Choisissez une heure"
+                     readonly />
+
+            <!-- ⭐ OBLIGATOIRE POUR QUE LE MESSAGE APPARAISSE AU BON ENDROIT -->
+            <span asp-validation-for="ReservationTime" class="text-danger"></span>
+        </div>
+
+
+        <div class="mb-3">
+            <label asp-for="NumberOfPeople" class="form-label"></label>
+            <input asp-for="NumberOfPeople"
+                   class="form-control"
+                   min="1"
+                   max="20"
+                   step="1"
+                   inputmode="numeric" />
+            <span asp-validation-for="NumberOfPeople" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="TableId" class="form-label">Table</label>
+            <select asp-for="TableId" class="form-select" id="TableId">
+                <option value="">-- Choisir une table --</option>
+                @foreach (var category in groupedTableOptions)
+                {
+                    <optgroup label="@category.Key">
+                        @foreach (var table in category.OrderBy(t => t.PricePerPerson))
+                        {
+                            <option value="@table.Id"
+                                    data-category="@table.Category"
+                                    data-category-label="@table.CategoryLabel"
+                                    data-baseprice="@table.BasePricePerPerson"
+                                    data-table-price="@table.PricePerPerson">
+                                @table.Name - @table.PricePerPerson.ToString("0.00") DH / pers.
+                            </option>
+                        }
+                    </optgroup>
+                }
+            </select>
+            <span asp-validation-for="TableId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Notes" class="form-label"></label>
+            <textarea asp-for="Notes" class="form-control"></textarea>
+        </div>
+        <div class="mb-3">
+    <label asp-for="Occasion" class="form-label"></label>
+     <select asp-for="Occasion" class="form-select" id="Occasion">
+        @foreach (var occasion in occasionOptions)
+        {
+            <option value="@occasion.Value"
+                    data-occasion-price="@occasion.PricePerPerson">
+                @occasion.Label - @occasion.PricePerPerson.ToString("0.00") DH / pers.
+            </option>
+        }
+    </select>
+    <span asp-validation-for="Occasion" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Prix estimé</label>
+      <input id="PricePreview" class="form-control" placeholder="Sélectionnez une table" readonly />
+
+
+        <button type="submit" class="btn btn-primary">Réserver</button>
+    </form>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+    
+    <script>
+        function updatePricePreview() {
+            const people = parseInt(document.getElementById('NumberOfPeople').value || 0);
+            const tableSelect = document.getElementById('TableId');
+            const occasionSelect = document.getElementById('Occasion');
+            const priceInput = document.getElementById('PricePreview');
+
+            if (!tableSelect || !occasionSelect || !priceInput) return;
+
+            const tablePrice = parseFloat(tableSelect.selectedOptions[0]?.getAttribute('data-table-price') || "0");
+            const occasionPrice = parseFloat(occasionSelect.selectedOptions[0]?.getAttribute('data-occasion-price') || "0");
+
+                           if (!people || !tableSelect.value || Number.isNaN(tablePrice) || Number.isNaN(occasionPrice)) {
+                priceInput.value = "";
+                return;
+            }
+
+            const pricePerPerson = tablePrice + occasionPrice;
+            const total = people * pricePerPerson;
+            priceInput.value = `${pricePerPerson.toFixed(2)} DH / pers.  •  Total : ${total.toFixed(2)} DH`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const peopleInput = document.getElementById('NumberOfPeople');
+            const tableSelect = document.getElementById('TableId');
+            const occasionSelect = document.getElementById('Occasion');
+
+            [peopleInput, tableSelect, occasionSelect].forEach(element => {
+                if (!element) return;
+                ['change', 'keyup'].forEach(evt => element.addEventListener(evt, updatePricePreview));
+            });
+
+             if (window.flatpickr) {
+                flatpickr.localize(flatpickr.l10ns.fr);
+
+                flatpickr('#ReservationDate', {
+                    dateFormat: 'Y-m-d',
+                    minDate: 'today',
+                    disableMobile: true
+                });
+
+                flatpickr('#ReservationTime', {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: 'H:i',
+                    time_24hr: true,
+                    minuteIncrement: 30,
+                    minTime: '13:00',
+                    maxTime: '23:00',
+                    disableMobile: true
+                });
+            }
+
+            updatePricePreview();
+        });
+    </script>
+}
+         
+ 

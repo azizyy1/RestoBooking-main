@@ -1,0 +1,50 @@
+@using System.Text.Json
+@model RestoBooking.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Tableau de bord";
+}
+
+<h2>Tableau de bord</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Plats les plus demandés</h4>
+        <canvas id="dishesChart"></canvas>
+    </div>
+    <div class="col-md-6">
+        <h4>Tables les plus réservées</h4>
+        <canvas id="tablesChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const dishesLabels = @Html.Raw(JsonSerializer.Serialize(Model.TopDishesLabels));
+    const dishesValues = @Html.Raw(JsonSerializer.Serialize(Model.TopDishesValues));
+
+    const tablesLabels = @Html.Raw(JsonSerializer.Serialize(Model.TopTablesLabels));
+    const tablesValues = @Html.Raw(JsonSerializer.Serialize(Model.TopTablesValues));
+
+    new Chart(document.getElementById('dishesChart'), {
+        type: 'bar',
+        data: {
+            labels: dishesLabels,
+            datasets: [{
+                label: 'Nombre de commandes',
+                data: dishesValues
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('tablesChart'), {
+        type: 'bar',
+        data: {
+            labels: tablesLabels,
+            datasets: [{
+                label: 'Nombre de réservations',
+                data: tablesValues
+            }]
+        }
+    });
+</script>

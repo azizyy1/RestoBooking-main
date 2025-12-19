@@ -1,0 +1,24 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+         <a class="btn btn-outline-light" asp-controller="Profile" asp-action="Index">
+            Profil
+        </a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="btn btn-outline-light"
+           asp-area="Identity"
+           asp-page="/Account/Login">
+            Connexion
+        </a>
+    </li>
+}
+</ul>
