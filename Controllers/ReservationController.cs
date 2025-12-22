@@ -85,6 +85,11 @@ namespace RestoBooking.Controllers
                     "Veuillez choisir une heure.");
             }
 
+            // Nettoyage basique des champs texte pour éviter les espaces accidentels
+            reservation.CustomerName = reservation.CustomerName?.Trim() ?? string.Empty;
+            reservation.CustomerEmail = reservation.CustomerEmail?.Trim() ?? string.Empty;
+            reservation.CustomerPhone = reservation.CustomerPhone?.Trim() ?? string.Empty;
+
             // 2️⃣ Si une heure est fournie, on combine Date + Heure
             if (reservation.ReservationTime != null)
             {

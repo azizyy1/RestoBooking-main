@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using RestoBooking.Data;
 using RestoBooking.Models;
 using RestoBooking.Services;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+// Force the SQLite database to live under the app's content root so the same file
+// is used across restarts and different launch contexts (e.g. CLI vs Visual Studio).
+var sqliteBuilder = new SqliteConnectionStringBuilder(connectionString);
+if (!Path.IsPathRooted(sqliteBuilder.DataSource))
+{
+    sqliteBuilder.DataSource = Path.Combine(builder.Environment.ContentRootPath, sqliteBuilder.DataSource);
+}
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseSqlite(sqliteBuilder.ToString()));
 
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)

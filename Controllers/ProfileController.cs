@@ -56,9 +56,12 @@ namespace RestoBooking.Controllers
             }
 
             var userEmail = user.Email?.Trim();
+            var normalizedUserEmail = userEmail?.ToLowerInvariant();
             var reservations = await _context.Reservations
                 .Include(r => r.Table)
-                .Where(r => userEmail != null && r.CustomerEmail.ToLower() == userEmail.ToLower())
+                .Where(r => normalizedUserEmail != null
+                            && r.CustomerEmail != null
+                            && r.CustomerEmail.Trim().ToLower() == normalizedUserEmail)
                 .OrderByDescending(r => r.ReservationDate)
                 .ToListAsync();
 
