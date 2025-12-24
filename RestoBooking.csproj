@@ -7,10 +7,12 @@
       <!-- Avoid generating an apphost executable to prevent Windows file-lock issues
          when a previous instance is still running during rebuilds. -->
     <UseAppHost>false</UseAppHost>
+    <!-- Skip running the external kill-target script by default to speed up local builds. Set to false to re-enable. -->
+    <SkipKillRunningRestoBooking>true</SkipKillRunningRestoBooking>
   </PropertyGroup>
 
   <!-- Ensure a previously running instance does not hold RestoBooking.dll open during builds. -->
-  <Target Name="KillRunningRestoBooking" BeforeTargets="Build">
+  <Target Name="KillRunningRestoBooking" BeforeTargets="Build" Condition="'$(SkipKillRunningRestoBooking)' != 'true'">
   <Exec Condition="'$(OS)' == 'Windows_NT'"
        ContinueOnError="true"
          Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)scripts/kill-target.ps1&quot; -TargetPath &quot;$(TargetPath)&quot; -AssemblyName &quot;$(AssemblyName)&quot; -Force" />
