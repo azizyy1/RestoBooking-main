@@ -33,8 +33,8 @@ namespace RestoBooking.Services
         private readonly ILogger<EmailService> _logger;
         private readonly IHostEnvironment _environment;
 
-    public EmailService(IOptions<EmailSettings> settings, ILogger<EmailService> logger, IHostEnvironment environment)        
-    {
+        public EmailService(IOptions<EmailSettings> settings, ILogger<EmailService> logger, IHostEnvironment environment)
+        {
             _settings = settings.Value;
             _logger = logger;
             _environment = environment;
@@ -51,7 +51,9 @@ namespace RestoBooking.Services
             using var client = new SmtpClient(_settings.Host, _settings.Port)
             {
                 Credentials = new NetworkCredential(_settings.UserName, _settings.Password),
-                EnableSsl = _settings.EnableSSL
+                EnableSsl = _settings.EnableSSL,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false
             };
 
             var mail = new MailMessage(_settings.From, to, subject, body)
@@ -62,6 +64,17 @@ namespace RestoBooking.Services
             try
             {
                 await client.SendMailAsync(mail);
+            }
+            catch (SmtpException smtpEx)
+            {
+                _logger.LogError(smtpEx,
+                    "Failed to send email to {Recipient} via {Host}:{Port}. Verify SMTP credentials, SSL requirements, and app passwords.",
+                    to, _settings.Host, _settings.Port);
+
+                if (_environment.IsProduction())
+                {
+                    throw;
+                }
             }
             catch (Exception ex)
             {
