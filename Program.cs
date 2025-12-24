@@ -4,9 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using RestoBooking.Data;
 using RestoBooking.Models;
 using RestoBooking.Services;
+using System.Net;
+using System.Net.Sockets;
 using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
+
+ConfigurePortBinding(builder);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -105,7 +109,7 @@ using (var scope = app.Services.CreateScope())
             table.IsActive = true;
         }
     }
-     await db.SaveChangesAsync();
+    await db.SaveChangesAsync();
 }
 
 // Création des rôles et admin par défaut
@@ -152,7 +156,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-     app.UseHsts();
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -169,3 +173,53 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+static void ConfigurePortBinding(WebApplicationBuilder builder)
+{
+    var configuredUrls = builder.Configuration["ASPNETCORE_URLS"];
+
+    if (!string.IsNullOrWhiteSpace(configuredUrls))
+    {
+        return;
+    }
+
+    var preferredPort = builder.Configuration.GetValue<int?>("PORT") ?? 5273;
+    var selectedPort = EnsureAvailablePort(preferredPort);
+
+    if (selectedPort != preferredPort)
+    {
+        Console.WriteLine($"Port {preferredPort} already in use. Falling back to {selectedPort}.");
+    }
+
+    builder.WebHost.UseUrls($"http://localhost:{selectedPort}");
+}
+
+static int EnsureAvailablePort(int preferredPort)
+{
+    if (!IsPortInUse(preferredPort))
+    {
+        return preferredPort;
+    }
+
+    using var listener = new TcpListener(IPAddress.Loopback, 0);
+    listener.Start();
+    var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+    listener.Stop();
+
+    return port;
+}
+
+static bool IsPortInUse(int port)
+{
+    try
+    {
+        using var listener = new TcpListener(IPAddress.Loopback, port);
+        listener.Start();
+        listener.Stop();
+        return false;
+    }
+    catch (SocketException)
+    {
+        return true;
+    }
+}
