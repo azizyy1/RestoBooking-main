@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestoBooking.Data;
@@ -13,6 +14,7 @@ namespace RestoBooking.Controllers
     public class ReservationController : Controller
     {
         private readonly AppDbContext _context;
+         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailService _emailService;
         private static readonly Dictionary<TableCategory, decimal> TableCategoryMultipliers = new()
         {
@@ -36,9 +38,10 @@ namespace RestoBooking.Controllers
             { OccasionType.ReservationVIP, 320m }
         };
 
-        public ReservationController(AppDbContext context, IEmailService emailService)
+        public ReservationController(AppDbContext context, IEmailService emailService, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
             _emailService = emailService;
         }
         private static void EnsureOccasionPricingCoverage()
@@ -68,7 +71,20 @@ namespace RestoBooking.Controllers
         public async Task<IActionResult> Create()
         {
            await LoadOptionsAsync();
-            return View();
+
+            var model = new Reservation();
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                model.CustomerEmail = user.Email ?? string.Empty;
+                model.CustomerName = !string.IsNullOrWhiteSpace(user.UserName)
+                    ? user.UserName
+                    : user.Email ?? string.Empty;
+                model.CustomerPhone = user.PhoneNumber ?? string.Empty;
+            }
+
+            return View(model);
         }
 
         // ---------------------------------------------------------
@@ -78,6 +94,27 @@ namespace RestoBooking.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Reservation reservation)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                reservation.CustomerEmail = user.Email ?? reservation.CustomerEmail;
+
+                if (string.IsNullOrWhiteSpace(reservation.CustomerName))
+                {
+                    reservation.CustomerName = !string.IsNullOrWhiteSpace(user.UserName)
+                        ? user.UserName
+                        : user.Email ?? reservation.CustomerName;
+                }
+
+                if (string.IsNullOrWhiteSpace(reservation.CustomerPhone))
+                {
+                    reservation.CustomerPhone = user.PhoneNumber ?? string.Empty;
+                }
+            }
+
+            
+
             // 1️⃣ Heure obligatoire
             if (reservation.ReservationTime == null)
             {

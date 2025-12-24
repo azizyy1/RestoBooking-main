@@ -1,0 +1,124 @@
+@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Déconnexion";
+}
+
+<section class="auth-wrapper">
+    <div class="auth-overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="auth-card shadow-lg text-center">
+                    <div class="auth-badge">Sécurité</div>
+                    <h1 class="auth-title">Vous déconnecter ?</h1>
+                    <p class="auth-subtitle">En vous déconnectant, vous quitterez votre espace client RestoBooking.</p>
+
+                    @if (TempData["StatusMessage"] is string status && !string.IsNullOrEmpty(status))
+                    {
+                        <div class="alert alert-success" role="alert">@status</div>
+                    }
+
+                    <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
+                        <button type="submit" class="btn btn-gold w-100 mb-3">Confirmer la déconnexion</button>
+                    </form>
+                    <a class="auth-link" asp-controller="Home" asp-action="Index">Revenir à l'accueil</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .auth-wrapper {
+            position: relative;
+            min-height: calc(100vh - 140px);
+            display: flex;
+            align-items: center;
+            padding: 140px 0 100px;
+            color: #eaeaea;
+            background: linear-gradient(180deg, rgba(10,10,12,0.92) 0%, #050508 100%);
+        }
+
+        .auth-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(201, 176, 122, 0.10), transparent 30%),
+                        radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.08), transparent 24%);
+            pointer-events: none;
+        }
+
+        .auth-card {
+            position: relative;
+            background: rgba(15, 15, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 32px 30px;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, rgba(245, 166, 35, 0.08), transparent 70%);
+            z-index: 0;
+        }
+
+        .auth-card > * { position: relative; z-index: 1; }
+
+        .auth-badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            background: rgba(245, 166, 35, 0.16);
+            border: 1px solid rgba(245, 166, 35, 0.45);
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.75rem;
+            color: #f7d7a2;
+            margin-bottom: 0.75rem;
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            letter-spacing: 0.03em;
+        }
+
+        .auth-subtitle {
+            color: #c1c1c1;
+            margin-bottom: 1.2rem;
+        }
+
+        .btn-gold {
+            background: linear-gradient(90deg, #f5a623, #c9b07a);
+            border: none;
+            color: #0d0d11;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 0.85rem 1.2rem;
+            border-radius: 12px;
+        }
+
+        .btn-gold:hover {
+            background: linear-gradient(90deg, #ffb94f, #d9c28b);
+            box-shadow: 0 12px 30px rgba(245, 166, 35, 0.25);
+        }
+
+        .auth-link {
+            color: #f5a623;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-link:hover { color: #ffb94f; }
+
+        @@media (max-width: 768px) {
+            .auth-card { padding: 28px 24px; }
+            .auth-wrapper { padding-top: 120px; }
+        }
+    </style>
+}

@@ -17,7 +17,8 @@ namespace RestoBooking.Data
         public DbSet<MenuItem> MenuItems { get; set; }
         public DbSet<ReservationMenuItem> ReservationMenuItems { get; set; }
 
-     protected override void OnModelCreating(ModelBuilder builder)
+
+        protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 

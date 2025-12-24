@@ -29,7 +29,12 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddControllersWithViews();
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddOptions<EmailSettings>()
+    .Bind(builder.Configuration.GetSection("EmailSettings"))
+    .ValidateDataAnnotations()
+    .Validate(settings => !string.IsNullOrWhiteSpace(settings.Password), "Email password must be provided.")
+    .Validate(settings => settings.EnableSSL, "SSL must be enabled for Gmail SMTP access.")
+    .ValidateOnStart();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
