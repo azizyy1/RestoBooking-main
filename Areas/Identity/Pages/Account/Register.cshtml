@@ -1,0 +1,115 @@
+@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Créer un compte";
+}
+
+<section class="auth-shell">
+    <div class="auth-overlay"></div>
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-5">
+                <div class="auth-highlight">
+                    <div class="auth-badge"><i class="bi bi-stars"></i> Club RestoBooking</div>
+                    <h3>Une expérience premium vous attend</h3>
+                    <p>Créez votre compte pour suivre vos réservations, recevoir des recommandations personnalisées et
+                        accéder aux
+                        avantages exclusifs de notre table d'hôtes.</p>
+
+                    <div>
+                        <div class="auth-chip"><i class="bi bi-calendar-check"></i> Gestion facile</div>
+                        <div class="auth-chip"><i class="bi bi-bell"></i> Alertes en temps réel</div>
+                        <div class="auth-chip"><i class="bi bi-gem"></i> Privilèges membres</div>
+                    </div>
+
+                    <div class="auth-meta">Support dédié • Paiement sécurisé • Univers gastronomique haut de gamme</div>
+                </div>
+            </div>
+
+            <div class="col-lg-5 ms-lg-auto col-md-7">
+                <div class="auth-card shadow-lg">
+                    <div class="auth-badge">Nouveau compte</div>
+                    <h1 class="auth-title">Rejoindre RestoBooking</h1>
+                    <p class="auth-subtitle">Renseignez vos informations pour profiter d'une expérience de réservation
+                        fluide et élégante.</p>
+
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="mt-4">
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label">Adresse e-mail</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent text-light"><i
+                                        class="bi bi-envelope"></i></span>
+                                <input asp-for="Input.Email" class="form-control auth-input" autocomplete="username"
+                                    aria-required="true" />
+                            </div>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Password" class="form-label">Mot de passe</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent text-light"><i
+                                        class="bi bi-shield-lock"></i></span>
+                                <input asp-for="Input.Password" class="form-control auth-input"
+                                    autocomplete="new-password" aria-required="true" />
+                            </div>
+                            <small class="text-secondary">Utilisez au moins 6 caractères avec majuscules, minuscules,
+                                chiffres ou symboles.</small>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Input.ConfirmPassword" class="form-label">Confirmer le mot de passe</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent text-light"><i
+                                        class="bi bi-check2-circle"></i></span>
+                                <input asp-for="Input.ConfirmPassword" class="form-control auth-input"
+                                    autocomplete="new-password" aria-required="true" />
+                            </div>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <button id="registerSubmit" type="submit" class="btn btn-gold w-100">Créer mon compte</button>
+
+                        <div class="auth-divider"><span>ou</span></div>
+                        <a class="btn btn-outline-gold w-100" asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">
+                            J'ai déjà un compte
+                        </a>
+                    </form>
+
+                    @if (Model.ExternalLogins?.Count > 0)
+                    {
+                        <div class="auth-divider"><span>Connexion sociale</span></div>
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl"
+                            method="post">
+                            <div class="d-grid gap-2">
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-outline-gold" name="provider" value="@provider.Name"
+                                        title="Se connecter avec @provider.DisplayName">
+                                        <i class="bi bi-box-arrow-in-right me-2"></i>Continuer avec @provider.DisplayName
+                                    </button>
+                                }
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <p class="text-secondary mt-3 mb-0"><i class="bi bi-info-circle me-1"></i>Les connexions via
+                            services externes ne sont pas configurées pour le moment.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
