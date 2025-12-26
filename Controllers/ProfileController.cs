@@ -8,6 +8,7 @@ using RestoBooking.Models;
 using RestoBooking.Models.ViewModels;
 using RestoBooking.Services;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Options;
 
 namespace RestoBooking.Controllers
 {
@@ -40,10 +41,18 @@ namespace RestoBooking.Controllers
             { OccasionType.ReservationVIP, 320m }
         };
 
-            public ProfileController(AppDbContext context, UserManager<IdentityUser> userManager, IEmailService emailService)        {
+        private readonly string? _notificationEmail;
+
+        public ProfileController(
+            AppDbContext context,
+            UserManager<IdentityUser> userManager,
+            IEmailService emailService,
+            IOptions<EmailSettings> emailOptions)
+        {
             _context = context;
             _userManager = userManager;
             _emailService = emailService;
+            _notificationEmail = emailOptions.Value.NotificationEmail ?? emailOptions.Value.From;
         }
 
         [HttpGet]
@@ -127,9 +136,9 @@ namespace RestoBooking.Controllers
                 return Challenge();
             }
 
-             var reservation = await _context.Reservations
-                .Include(r => r.Table)
-                .FirstOrDefaultAsync(r => r.Id == id);
+            var reservation = await _context.Reservations
+               .Include(r => r.Table)
+               .FirstOrDefaultAsync(r => r.Id == id);
 
             if (reservation == null)
             {
@@ -141,7 +150,7 @@ namespace RestoBooking.Controllers
                 return Forbid();
             }
 
-             if (reservation.IsCancelled)
+            if (reservation.IsCancelled)
             {
                 TempData["StatusMessage"] = "Cette réservation a déjà été annulée.";
                 return RedirectToAction(nameof(Index));
@@ -165,9 +174,12 @@ namespace RestoBooking.Controllers
             reservation.TotalPrice = totalPrice;
             await _context.SaveChangesAsync();
 
-             var subject = "[RestoBooking] Confirmation d'annulation de votre réservation";
+            var cancellationDate = reservation.CancelledAt?.ToLocalTime().ToString("dd/MM/yyyy à HH:mm") ?? "-";
+
+            var subject = "[RestoBooking] Confirmation d'annulation de votre réservation";
             var body = $@"
                 <h2>Bonjour {reservation.CustomerName},</h2>
+                <p><strong>Annulation enregistrée</strong></p>
                 <p>Votre réservation chez <strong>RestoBooking</strong> a bien été annulée.</p>
                 <ul>
                     <li><strong>Date et heure initiales :</strong> {reservation.ReservationDate:dd/MM/yyyy HH:mm}</li>
@@ -175,6 +187,7 @@ namespace RestoBooking.Controllers
                     <li><strong>Montant total initial :</strong> {totalPrice:0.00} DH</li>
                     <li><strong>Frais d'annulation (5%) :</strong> {cancellationFee:0.00} DH</li>
                     <li><strong>Montant remboursé :</strong> {refundAmount:0.00} DH</li>
+                    <li><strong>Annulé le :</strong> {cancellationDate}</li>
                 </ul>
                 <p>Le montant remboursé vous sera retourné selon le moyen de paiement utilisé.</p>
                 <p>Merci de votre compréhension.</p>
