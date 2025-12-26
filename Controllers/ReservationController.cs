@@ -8,6 +8,7 @@ using RestoBooking.Models.ViewModels;
 using RestoBooking.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using Microsoft.Extensions.Options;
 
 namespace RestoBooking.Controllers
 {
@@ -17,6 +18,8 @@ namespace RestoBooking.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailService _emailService;
         private const string ReservationConfirmationSubject = "[RestoBooking] Confirmation de votre réservation";
+        private readonly string? _notificationEmail;
+
         private static readonly Dictionary<TableCategory, decimal> TableCategoryMultipliers = new()
         {
             { TableCategory.Standard, 1.35m },
@@ -39,11 +42,16 @@ namespace RestoBooking.Controllers
             { OccasionType.ReservationVIP, 320m }
         };
 
-        public ReservationController(AppDbContext context, IEmailService emailService, UserManager<IdentityUser> userManager)
-        {
+            public ReservationController(
+            AppDbContext context,
+            IEmailService emailService,
+            UserManager<IdentityUser> userManager,
+            IOptions<EmailSettings> emailOptions)       
+             {
             _context = context;
             _userManager = userManager;
             _emailService = emailService;
+            _notificationEmail = emailOptions.Value.NotificationEmail ?? emailOptions.Value.From;
         }
         private static void EnsureOccasionPricingCoverage()
         {
@@ -205,6 +213,12 @@ namespace RestoBooking.Controllers
             var body = BuildReservationConfirmationEmail(reservation, table, tablePricePerPerson, occasionPricePerPerson);
 
             await _emailService.SendEmail(reservation.CustomerEmail, ReservationConfirmationSubject, body);
+
+            if (!string.IsNullOrWhiteSpace(_notificationEmail))
+            {
+                var notificationBody = BuildReservationNotificationEmail(reservation, table, tablePricePerPerson, occasionPricePerPerson);
+                await _emailService.SendEmail(_notificationEmail, "[RestoBooking] Nouvelle réservation reçue", notificationBody);
+            }
 
             return RedirectToAction("Success", new { id = reservation.Id });
         }
@@ -444,5 +458,32 @@ namespace RestoBooking.Controllers
                 <p>Cordialement,<br/>L'équipe RestoBooking</p>
             ";
         }
+        private static string BuildReservationNotificationEmail(
+            Reservation reservation,
+            Table table,
+            decimal tablePricePerPerson,
+            decimal occasionPricePerPerson)
+        {
+            var notesSection = string.IsNullOrWhiteSpace(reservation.Notes)
+                ? "Aucune note supplémentaire."
+                : reservation.Notes.Trim();
+
+            return $@"
+                <h2>Nouvelle réservation enregistrée</h2>
+                <p>Une nouvelle réservation a été créée via RestoBooking.</p>
+                <ul>
+                    <li><strong>Client :</strong> {reservation.CustomerName} ({reservation.CustomerEmail})</li>
+                    <li><strong>Téléphone :</strong> {reservation.CustomerPhone}</li>
+                    <li><strong>Date et Heure :</strong> {reservation.ReservationDate:dd/MM/yyyy HH:mm}</li>
+                    <li><strong>Table :</strong> {table.Name} ({GetDisplayName(table.Category)})</li>
+                    <li><strong>Nombre de personnes :</strong> {reservation.NumberOfPeople}</li>
+                    <li><strong>Prix par personne (Table) :</strong> {tablePricePerPerson:C}</li>
+                    <li><strong>Prix par personne (Occasion) :</strong> {occasionPricePerPerson:C}</li>
+                    <li><strong>Total à payer :</strong> {reservation.TotalPrice:C}</li>
+                    <li><strong>Notes :</strong> {notesSection}</li>
+                </ul>
+                <p>Cet email est envoyé automatiquement pour confirmation interne.</p>
+            ";
+        }
     }
-}   
+}

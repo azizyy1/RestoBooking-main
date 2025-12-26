@@ -25,6 +25,10 @@ namespace RestoBooking.Services
 
         [Required, EmailAddress]
         public string From { get; set; } = null!;
+
+        [EmailAddress]
+        public string? NotificationEmail { get; set; }
+
     }
 
     public class EmailService : IEmailService
