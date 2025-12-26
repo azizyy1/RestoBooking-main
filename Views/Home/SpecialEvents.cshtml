@@ -3,58 +3,112 @@
 }
 
 <section class="page-hero events-hero">
-    <div class="container hero-grid">
-        <div>
-            <p class="page-kicker">Special Events</p>
-            <h1 class="page-title">Nuits Danse Orientale</h1>
+    <div class="container hero-grid events-hero-grid">
+        <div class="events-hero-copy">
+            <p class="page-kicker">Événements privés</p>
+            <h1 class="page-title">Des soirées qui ressemblent à vos rêves</h1>
             <p class="page-subtitle">
-                Chaque semaine, notre rooftop se transforme en scène pour la danse orientale : rythmes envoûtants,
-                tenues scintillantes et menu signature imaginé pour l'occasion.
+                Entre vue panoramique, DJ live et décors lumineux, notre rooftop s'habille de couleurs et de photos
+                vibrantes pour vos célébrations. Laissez-vous guider par notre équipe pour composer un moment
+                spectaculaire, plein de vie et d'émotions.
             </p>
             <div class="events-tags">
-                <span class="badge bg-light text-dark">Live Show</span>
-                <span class="badge bg-light text-dark">Menu dégustation</span>
-                <span class="badge bg-light text-dark">Cocktails signatures</span>
+                <span class="badge bg-light text-dark">Vue mer & skyline</span>
+                <span class="badge bg-light text-dark">Décoration sur mesure</span>
+                <span class="badge bg-light text-dark">Photobooth & souvenirs</span>
+                <span class="badge bg-light text-dark">Cuisine festive</span>
+            </div>
+            <div class="events-actions">
+                <a class="btn btn-primary" asp-controller="Reservation" asp-action="Create">Réserver ma date</a>
+                <a class="btn btn-outline-light" asp-controller="Home" asp-action="Contact">Parler à un conseiller</a>
             </div>
         </div>
-        <div class="page-hero-card">
-            <h3>Prochain rendez-vous</h3>
-            <ul class="event-list">
-                <li><i class="bi bi-calendar-event"></i> Chaque vendredi et samedi</li>
-                <li><i class="bi bi-clock"></i> 21h00 - 01h00</li>
-                <li><i class="bi bi-geo-alt"></i> Rooftop RestoBooking, Casablanca</li>
-            </ul>
-            <a class="btn btn-primary w-100" asp-controller="Reservation" asp-action="Create">Réserver ma table</a>
+        <div class="events-hero-visual">
+            <div class="hero-photo main" style="background-image: url('/oriantal/animation-restaurant.jpg');"></div>
+            <div class="hero-photo-stack">
+                <div class="hero-photo" style="background-image: url('/oriantal/1.png.webp');"></div>
+                <div class="hero-photo"
+                    style="background-image: url('/oriantal/312053899_5516306048459046_2075363853623477754_n.jpg');">
+                </div>
+                <div class="hero-photo" style="background-image: url('/oriantal/Narwama-20-1024x1024.jpg');"></div>
+            </div>
         </div>
     </div>
 </section>
 
 <section class="events-details">
-    <div class="container details-grid">
-        <div>
-            <h2>Une immersion orientale</h2>
-            <p>
-                Les artistes invités revisiteront les classiques de la danse orientale avec musiciens live. Pour
-                accompagner le spectacle, notre chef propose un parcours gourmand mêlant mezzés, grillades et desserts
-                parfumés à la fleur d'oranger.
-            </p>
-            <p>
-                Les groupes peuvent réserver un espace dédié avec service personnalisé. Faites-nous part de vos attentes
-                pour concevoir une soirée qui vous ressemble.
-            </p>
-            <div class="events-actions">
-                <a class="btn btn-outline-light" asp-controller="Home" asp-action="Contact">Parler au concierge</a>
-                <a class="btn btn-primary" asp-controller="Reservation" asp-action="Create">Planifier l'événement</a>
+    <div class="container">
+        <div class="details-grid">
+            <div>
+                <h2>Une immersion orientale</h2>
+                <p>
+                    Les artistes invités revisiteront les classiques de la danse orientale avec musiciens live. Pour
+                    accompagner le spectacle, notre chef propose un parcours gourmand mêlant mezzés, grillades et
+                    desserts parfumés à la fleur d'oranger. Tout est pensé pour que chaque photo de votre soirée reflète
+                    la chaleur de l'instant.
+                </p>
+                <p>
+                    Les groupes peuvent réserver un espace dédié avec service personnalisé. Faites-nous part de vos
+                    attentes pour concevoir une soirée qui vous ressemble : mise en scène, playlists, animations
+                    lumineuses ou coin photo pour immortaliser votre événement.
+                </p>
+                <div class="events-actions">
+                    <a class="btn btn-outline-light" asp-controller="Home" asp-action="Contact">Parler au concierge</a>
+                    <a class="btn btn-primary" asp-controller="Reservation" asp-action="Create">Planifier
+                        l'événement</a>
+                </div>
+            </div>
+            <div class="events-highlight">
+                <h3>Ce qui vous attend</h3>
+                <ul>
+                    <li>Accueil signature avec mocktails maison</li>
+                    <li>Menu dégustation de saison en trois temps</li>
+                    <li>Corner mixologie avec créations orientales</li>
+                    <li>Scène et sonorisation incluses pour vos annonces</li>
+                    <li>Décors immersifs et spots photo prêts à partager</li>
+                </ul>
             </div>
         </div>
-        <div class="events-highlight">
-            <h3>Ce qui vous attend</h3>
-            <ul>
-                <li>Accueil signature avec mocktails maison</li>
-                <li>Menu dégustation de saison en trois temps</li>
-                <li>Corner mixologie avec créations orientales</li>
-                <li>Scène et sonorisation incluses pour vos annonces</li>
-            </ul>
+</section>
+
+<section class="event-gallery">
+    <div class="container">
+        <div class="section-header">
+            <p class="page-kicker">Galerie</p>
+            <h2 class="page-title">Un rooftop vibrant en images</h2>
+            <p class="page-subtitle">Des couleurs, des costumes et un décor spectaculaire pour faire briller vos
+                souvenirs.</p>
+        </div>
+        <div class="event-gallery-grid">
+            <div class="gallery-card tall">
+                <img src="/oriantal/1.png.webp" alt="Danseuse en costume oriental" />
+            </div>
+            <div class="gallery-card">
+                <img src="/oriantal/312053899_5516306048459046_2075363853623477754_n.jpg"
+                    alt="Père Noël sur le rooftop" />
+            </div>
+            <div class="gallery-card wide">
+                <img src="/oriantal/animation-restaurant.jpg" alt="Animation festive au restaurant" />
+            </div>
+            <div class="gallery-card">
+                <img src="/oriantal/Narwama-20-1024x1024.jpg" alt="Ambiance orientale chic" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="events-cta">
+    <div class="container events-cta-content">
+        <div>
+            <p class="page-kicker">Prêt à célébrer ?</p>
+            <h2 class="page-title">Votre événement privé sous les étoiles</h2>
+            <p class="page-subtitle">Parlez-nous de votre projet : anniversaire, afterwork, lancement ou soirée de fin
+                d'année. Nous préparons un décor sur mesure, des playlists à vos goûts et un service qui se voit autant
+                qu'il se savoure.</p>
+        </div>
+        <div class="events-cta-actions">
+            <a class="btn btn-primary" asp-controller="Reservation" asp-action="Create">Bloquer une date</a>
+            <a class="btn btn-outline-light" asp-controller="Home" asp-action="Contact">Nous écrire</a>
         </div>
     </div>
 </section>
