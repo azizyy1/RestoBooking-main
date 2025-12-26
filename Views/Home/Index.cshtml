@@ -21,7 +21,7 @@
 </div>
 
 <section class="restaurant-overview">
-    <div class="container">
+    <div class="section-container">
         <div class="overview-header">
             <p class="overview-kicker">Le Restaurant</p>
             <h2 class="overview-title">Une expérience pensée pour les amoureux de la bonne cuisine</h2>
@@ -59,32 +59,72 @@
     </div>
 </section>
 
+<section class="contact-banner">
+    <div class="contact-overlay"></div>
+    <div class="container contact-banner__content">
+        <div class="contact-banner__text">
+            <p class="contact-banner__kicker">Prêt à échanger ?</p>
+            <h2 class="contact-banner__title">Restaurant &amp; bar sur mesure, parlons de votre projet</h2>
+            <p class="contact-banner__subtitle">
+                Un évènement, une réservation spéciale ou une simple question ? Cliquez ci-dessous pour être redirigé
+                vers notre page "Contactez-nous" et discuter avec notre équipe.
+            </p>
+            <a class="btn btn-primary btn-lg contact-banner__btn" asp-controller="Home" asp-action="Contact">
+                Contactez-nous
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="signature-cuisines" id="specialites">
+    <div class="section-container">
+        <div class="signature-header">
+            <div>
+                <p class="signature-kicker">Nos cuisines</p>
+                <h2 class="signature-title">Des spécialités signatures à découvrir</h2>
+                <p class="signature-subtitle">
+                    Une invitation à voyager entre l'Orient, la Méditerranée et le savoir-faire du grill.
+                    Chaque univers culinaire est préparé avec des produits d'exception et une maîtrise unique.
+                </p>
+            </div>
+            <a class="btn btn-outline-gold signature-btn" asp-controller="Home" asp-action="Portfolio">
+                Découvrir le portfolio
+            </a>
+        </div>
+
+        <div class="signature-grid">
+            <article class="signature-card">
+                <div class="signature-icon">🇲🇦</div>
+                <h3 class="signature-heading">Cuisine Marocaine</h3>
+                <p class="signature-text">Tajines mijotés, méchoui délicat et pâtisseries aux notes d'amande et de fleur
+                    d'oranger.</p>
+                <span class="signature-tag">Épices & Douceurs</span>
+            </article>
+            <article class="signature-card">
+                <div class="signature-icon">🇮🇹</div>
+                <h3 class="signature-heading">Cuisine Italienne</h3>
+                <p class="signature-text">Pâtes fraîches, burrata crémeuse et huiles parfumées : la dolce vita dans
+                    chaque assiette.</p>
+                <span class="signature-tag">Prodotti d'eccellenza</span>
+            </article>
+            <article class="signature-card">
+                <div class="signature-icon">🥩</div>
+                <h3 class="signature-heading">Steakhouse</h3>
+                <p class="signature-text">Sélection de viandes premium, maturation maîtrisée et cuissons au feu vif pour
+                    des saveurs fumées.</p>
+                <span class="signature-tag">Grill signature</span>
+            </article>
+        </div>
+    </div>
+</section>
+
 <section class="photo-gallery" id="galerie">
     <div class="container">
         <div class="gallery-header">
             <p class="gallery-kicker">Galerie</p>
             <h2 class="gallery-title">Moments à savourer</h2>
-            <p class="gallery-subtitle">Ajoutez vos propres photos pour mettre en avant l'ambiance de votre restaurant.
-            </p>
-
-            @if (!string.IsNullOrEmpty(Model.StatusMessage))
-            {
-                <div class="upload-alert">@Model.StatusMessage</div>
-            }
-
-            <form asp-action="UploadGalleryImage" method="post" enctype="multipart/form-data" class="gallery-upload">
-                <div class="upload-label">
-                    <i class="bi bi-cloud-arrow-up"></i>
-                    <div>
-                        <strong>Ajouter une photo locale</strong>
-                        <span>Formats acceptés : jpg, jpeg, png, webp (5 Mo max)</span>
-                    </div>
-                </div>
-                <div class="upload-controls">
-                    <input type="file" name="imageFile" accept=".jpg,.jpeg,.png,.webp" class="form-control" />
-                    <button type="submit" class="btn btn-gold">Télécharger</button>
-                </div>
-            </form>
+            <p class="gallery-subtitle">Une sélection de photos locales pour mettre en avant l'ambiance de votre
+                restaurant.</p>
         </div>
 
         <div class="gallery-grid">
