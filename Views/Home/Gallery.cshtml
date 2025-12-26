@@ -1,0 +1,51 @@
+@model GalleryViewModel
+@{
+    ViewData["Title"] = "Galerie";
+}
+
+<section class="page-hero gallery-hero">
+    <div class="container hero-grid">
+        <div>
+            <p class="page-kicker">Galerie</p>
+            <h1 class="page-title">Ambiance et instants de partage</h1>
+            <p class="page-subtitle">
+                Découvrez nos espaces baignés de lumière, les dressages signatures et les soirées animées qui font la
+                réputation de notre rooftop à Casablanca.
+            </p>
+            <a class="btn btn-primary btn-lg" asp-controller="Reservation" asp-action="Create">Réserver une table</a>
+        </div>
+        <div class="page-hero-card">
+            <h3>Moments capturés</h3>
+            <p>Une sélection de photos prises lors de nos dîners, afterworks et événements privés.</p>
+            <div class="hero-meta">
+                <span class="badge bg-light text-dark">Rooftop</span>
+                <span class="badge bg-light text-dark">Mixologie</span>
+                <span class="badge bg-light text-dark">Live Music</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="gallery-page-grid">
+    <div class="container">
+        <div class="gallery-grid">
+            @foreach (var image in Model.ImageUrls)
+            {
+                <div class="gallery-item">
+                    <img src="@image" alt="Ambiance du restaurant" />
+                </div>
+            }
+        </div>
+
+        <div class="gallery-cta">
+            <div>
+                <h2>Envie de vivre l'expérience en vrai ?</h2>
+                <p>Réservez votre table ou contactez-nous pour privatiser un espace dédié à votre événement.</p>
+            </div>
+            <div class="gallery-actions">
+                <a class="btn btn-outline-light" asp-controller="Home" asp-action="Contact">Nous contacter</a>
+                <a class="btn btn-primary" asp-controller="Reservation" asp-action="Create">Réserver</a>
+            </div>
+        </div>
+    </div>
+</section>

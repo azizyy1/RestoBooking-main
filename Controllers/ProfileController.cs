@@ -70,8 +70,7 @@ namespace RestoBooking.Controllers
                 .Include(r => r.Table)
                 .Where(r => normalizedUserEmail != null
                             && r.CustomerEmail != null
-                            && r.CustomerEmail.Trim().ToLower() == normalizedUserEmail
-                            && !r.IsHiddenByUser)
+                            && r.CustomerEmail.Trim().ToLower() == normalizedUserEmail)
                 .OrderByDescending(r => r.ReservationDate)
                 .ToListAsync();
 
@@ -197,42 +196,6 @@ namespace RestoBooking.Controllers
             await _emailService.SendEmail(reservation.CustomerEmail, subject, body);
 
             TempData["StatusMessage"] = $"Votre réservation a été annulée. Frais : {cancellationFee:0.00} DH. Remboursement : {refundAmount:0.00} DH.";
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Remove(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Challenge();
-            }
-
-            var reservation = await _context.Reservations
-                .FirstOrDefaultAsync(r => r.Id == id);
-
-            if (reservation == null)
-            {
-                return NotFound();
-            }
-
-            if (!string.Equals(reservation.CustomerEmail, user.Email, StringComparison.OrdinalIgnoreCase))
-            {
-                return Forbid();
-            }
-
-            if (!reservation.IsCancelled)
-            {
-                TempData["StatusMessage"] = "Vous pouvez uniquement retirer les réservations annulées.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            reservation.IsHiddenByUser = true;
-            await _context.SaveChangesAsync();
-
-            TempData["StatusMessage"] = "La réservation a été retirée de votre profil.";
             return RedirectToAction(nameof(Index));
         }
 

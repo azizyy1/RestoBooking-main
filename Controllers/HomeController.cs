@@ -33,6 +33,21 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult Gallery()
+    {
+        var galleryImages = GetGalleryImages();
+
+        return View(new GalleryViewModel
+        {
+            ImageUrls = galleryImages
+        });
+    }
+
+    public IActionResult SpecialEvents()
+    {
+        return View();
+    }
+
     public IActionResult Portfolio()
     {
         return View();

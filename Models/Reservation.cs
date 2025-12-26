@@ -92,8 +92,5 @@ namespace RestoBooking.Models
         [Display(Name = "Montant remboursé")]
         public decimal RefundAmount { get; set; }
 
-        [Display(Name = "Masquée par l'utilisateur")]
-        public bool IsHiddenByUser { get; set; }
-
     }
 }

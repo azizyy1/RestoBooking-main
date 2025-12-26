@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,139 +8,172 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-     @await RenderSectionAsync("Styles", required: false)
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    @await RenderSectionAsync("Styles", required: false)
     <link rel="stylesheet" href="~/RestoBooking.styles.css" asp-append-version="true" />
 </head>
 
 <body>
-   <header>
-    <nav class="navbar navbar-expand-lg navbar-dark main-navbar fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                RestoBooking
-            </a>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark main-navbar fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    RestoBooking
+                </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#mainNavbar" aria-controls="mainNavbar"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                    aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                      <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Portfolio">Portfolio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Reservation" asp-action="Create">
-                            Réserver une table
-                        </a>
-                    </li>
-                   @if (User.IsInRole("Admin"))
-{
-    <ul class="navbar-nav ms-3">
-        <li class="nav-item">
-            <a class="nav-link text-warning"
-               asp-controller="Reservation"
-               asp-action="Admin">
-                Dashboard
-            </a>
-        </li>
-    </ul>
-}
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home"
+                                asp-action="SpecialEvents">Événements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Gallery">Galerie</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Portfolio">Portfolio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Reservation" asp-action="Create">
+                                Réserver une table
+                            </a>
+                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <ul class="navbar-nav ms-3">
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning" asp-controller="Reservation" asp-action="Admin">
+                                        Dashboard
+                                    </a>
+                                </li>
+                            </ul>
+                        }
 
 
-                </ul>
+                    </ul>
 
-                <div class="navbar-nav ms-auto">
-                    <partial name="_LoginPartial" />
+                    <div class="navbar-nav ms-auto">
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-   <footer class="site-footer">
-    <div class="footer-main container">
-        <!-- Colonne 1 : logo + liens -->
-        <div class="footer-col footer-brand">
-            <div class="footer-logo">RESTOBOOKING</div>
-            <ul class="footer-links">
-                <li>
-                    <a asp-controller="Home" asp-action="Index">Accueil</a>
-                </li>
-                <li>
-                    <a asp-controller="Home" asp-action="Privacy">Politique de confidentialité</a>
-                </li>
-                <li>
-                    <a asp-controller="Reservation" asp-action="Create">Réserver une table</a>
-                </li>
-            </ul>
-        </div>
+    <section class="location-highlight">
+        <div class="container location-grid">
+            <div class="location-details">
+                <p class="location-kicker">Nous rendre visite</p>
+                <h2 class="location-title">Au cœur de Casablanca</h2>
+                <p class="location-text">
+                    Retrouvez-nous au 10, Boulevard Principal à Casablanca. Un rooftop chaleureux avec une vue
+                    panoramique pour profiter de nos cocktails signature et de nos spécialités maison.
+                </p>
+                <div class="location-contact">
+                    <p><i class="bi bi-telephone"></i> +212 6 12 34 56 78</p>
+                    <p><i class="bi bi-envelope"></i> contact@restobooking.ma</p>
+                </div>
+            </div>
 
-        <!-- Colonne 2 : contact -->
-        <div class="footer-col">
-            <h4>Contact</h4>
-            <p class="footer-text">
-                +212 5 64 64 23 21<br />
-                contact@restobooking.com
-            </p>
-            <p class="footer-text footer-subtitle">Suivez-nous</p>
-            <div class="footer-social">
-                <span>FB</span>
-                <span>IG</span>
+            <div class="location-map">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.915343423435!2d-7.635!3d33.597!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7cdac644a8a3d%3A0x123456789abcd!2sBoulevard%20Principal%2C%20Casablanca!5e0!3m2!1sfr!2sma!4v1712345678901!5m2!1sfr!2sma"
+                    width="100%" height="280" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-main container">
+            <!-- Colonne 1 : logo + liens -->
+            <div class="footer-col footer-brand">
+                <div class="footer-logo">RESTOBOOKING</div>
+                <ul class="footer-links">
+                    <li>
+                        <a asp-controller="Home" asp-action="Index">Accueil</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Home" asp-action="Privacy">Politique de confidentialité</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Reservation" asp-action="Create">Réserver une table</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Colonne 2 : contact -->
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <p class="footer-text">
+                    +212 5 64 64 23 21<br />
+                    contact@restobooking.com
+                </p>
+                <p class="footer-text footer-subtitle">Suivez-nous</p>
+                <div class="footer-social">
+                    <span>FB</span>
+                    <span>IG</span>
+                </div>
+            </div>
+
+            <!-- Colonne 3 : newsletter -->
+            <div class="footer-col">
+                <h4>Rejoignez le club</h4>
+                <p class="footer-text">
+                    Soyez informé des événements et offres spéciales.
+                </p>
+                <form class="footer-newsletter">
+                    <input type="email" placeholder="E-mail *" required />
+                    <button type="submit">S'abonner</button>
+                </form>
+            </div>
+
+            <!-- Colonne 4 : horaires + adresse -->
+            <div class="footer-col">
+                <h4>Heures d'ouverture</h4>
+                <ul class="footer-hours">
+                    <li><span>Lun. - Ven.</span><span>13:00 - 23:00</span></li>
+                    <li><span>Samedi</span><span></span>13:00 - 00:00</li>
+                    <li><span>Dimanche</span><span>16:00 - 00:00</span></li>
+                </ul>
+                <p class="footer-text footer-address">
+                    47 rue ,<br />
+                    75020 Roudani, Casablanca
+                </p>
             </div>
         </div>
 
-        <!-- Colonne 3 : newsletter -->
-        <div class="footer-col">
-            <h4>Rejoignez le club</h4>
-            <p class="footer-text">
-                Soyez informé des événements et offres spéciales.
-            </p>
-            <form class="footer-newsletter">
-                <input type="email" placeholder="E-mail *" required />
-                <button type="submit">S'abonner</button>
-            </form>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <a href="#">Termes et conditions</a>
+                <a href="#">Politique de cookies</a>
+                <a asp-controller="Home" asp-action="Privacy">Politique de confidentialité</a>
+            </div>
+            <div class="footer-bottom-right">
+                © 2025 – RestoBooking
+            </div>
         </div>
-
-        <!-- Colonne 4 : horaires + adresse -->
-        <div class="footer-col">
-            <h4>Heures d'ouverture</h4>
-            <ul class="footer-hours">
-                <li><span>Lun. - Ven.</span><span>13:00 - 23:00</span></li>
-                <li><span>Samedi</span><span></span>13:00 - 00:00</li>
-                <li><span>Dimanche</span><span>16:00 - 00:00</span></li>
-            </ul>
-            <p class="footer-text footer-address">
-                47 rue ,<br />
-                75020 Roudani, Casablanca
-            </p>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        <div class="footer-bottom-left">
-            <a href="#">Termes et conditions</a>
-            <a href="#">Politique de cookies</a>
-            <a asp-controller="Home" asp-action="Privacy">Politique de confidentialité</a>
-        </div>
-        <div class="footer-bottom-right">
-            © 2025 – RestoBooking
-        </div>
-    </div>
-</footer>
+    </footer>
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -147,4 +181,5 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

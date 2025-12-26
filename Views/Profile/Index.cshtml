@@ -144,16 +144,7 @@
                         <div class="reservation-item__actions">
                             @if (reservation.IsCancelled)
                             {
-                                <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
-                                    <span class="badge rounded-pill text-bg-danger">Réservation annulée</span>
-                                    <form asp-action="Remove" method="post" class="d-inline">
-                                        <input type="hidden" name="id" value="@reservation.Id" />
-                                        <button type="submit" class="btn btn-outline-secondary"
-                                            onclick="return confirm('Retirer cette réservation annulée de votre profil ?');">
-                                            Retirer de mes réservations
-                                        </button>
-                                    </form>
-                                </div>
+                                <span class="badge rounded-pill text-bg-danger">Réservation annulée</span>
                             }
                             else if (reservation.IsUpcoming)
                             {
