@@ -53,10 +53,12 @@ using (var scope = app.Services.CreateScope())
     }
     catch (InvalidOperationException ex)
     {
-        // If migrations are out of sync with the model (common when running a checkout without regenerating migrations),
-        // fall back to EnsureCreated to create the database for development/testing purposes.
-        // This avoids the runtime crash while still allowing the app to start.
-        await db.Database.EnsureCreatedAsync();
+        // If the database was previously created without migrations (e.g., via EnsureCreated), migration can fail with an
+        // InvalidOperationException. In that case, recreate the database using the current migrations so the schema matches
+        // the model and seeded data.
+        app.Logger.LogWarning(ex, "Failed to apply migrations; recreating the database to align schema with current model.");
+        await db.Database.EnsureDeletedAsync();
+        await db.Database.MigrateAsync();
     }
 
     var defaultTables = new List<Table>
