@@ -1,4 +1,5 @@
-﻿@{
+﻿@model GalleryViewModel
+@{
     ViewData["Title"] = "Accueil";
 }
 
@@ -13,8 +14,7 @@
     <div class="hero-content">
         <h1 class="hero-title">Bienvenue chez RestoBooking</h1>
         <p class="hero-subtitle">Réservez votre table dans une ambiance chic et chaleureuse.</p>
-        <a class="btn btn-primary btn-lg hero-btn"
-           asp-controller="Reservation" asp-action="Create">
+        <a class="btn btn-primary btn-lg hero-btn" asp-controller="Reservation" asp-action="Create">
             Réserver une table
         </a>
     </div>
@@ -32,7 +32,8 @@
                 <div class="overview-step">01</div>
                 <h3 class="overview-heading">Grill traditionnel, touche moderne</h3>
                 <p class="overview-text">
-                    Paragraphe. Cliquez ici pour le modifier et ajouter votre propre texte. C'est l'espace idéal pour raconter
+                    Paragraphe. Cliquez ici pour le modifier et ajouter votre propre texte. C'est l'espace idéal pour
+                    raconter
                     une histoire et vous présenter à vos visiteurs.
                 </p>
             </div>
@@ -40,7 +41,8 @@
                 <div class="overview-step">02</div>
                 <h3 class="overview-heading">Servir les meilleures viandes</h3>
                 <p class="overview-text">
-                    Paragraphe. Cliquez ici pour le modifier et ajouter votre propre texte. C'est l'espace idéal pour raconter
+                    Paragraphe. Cliquez ici pour le modifier et ajouter votre propre texte. C'est l'espace idéal pour
+                    raconter
                     une histoire et vous présenter à vos visiteurs.
                 </p>
             </div>
@@ -48,7 +50,8 @@
                 <div class="overview-step">03</div>
                 <h3 class="overview-heading">Situé au cœur de la ville</h3>
                 <p class="overview-text">
-                    Paragraphe. Cliquez ici pour le modifier et ajouter votre propre texte. C'est l'espace idéal pour raconter
+                    Paragraphe. Cliquez ici pour le modifier et ajouter votre propre texte. C'est l'espace idéal pour
+                    raconter
                     une histoire et vous présenter à vos visiteurs.
                 </p>
             </div>
@@ -61,34 +64,40 @@
         <div class="gallery-header">
             <p class="gallery-kicker">Galerie</p>
             <h2 class="gallery-title">Moments à savourer</h2>
-            <p class="gallery-subtitle">Ajoutez vos propres photos pour mettre en avant l'ambiance de votre restaurant.</p>
+            <p class="gallery-subtitle">Ajoutez vos propres photos pour mettre en avant l'ambiance de votre restaurant.
+            </p>
+
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class="upload-alert">@Model.StatusMessage</div>
+            }
+
+            <form asp-action="UploadGalleryImage" method="post" enctype="multipart/form-data" class="gallery-upload">
+                <div class="upload-label">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    <div>
+                        <strong>Ajouter une photo locale</strong>
+                        <span>Formats acceptés : jpg, jpeg, png, webp (5 Mo max)</span>
+                    </div>
+                </div>
+                <div class="upload-controls">
+                    <input type="file" name="imageFile" accept=".jpg,.jpeg,.png,.webp" class="form-control" />
+                    <button type="submit" class="btn btn-gold">Télécharger</button>
+                </div>
+            </form>
         </div>
 
         <div class="gallery-grid">
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80" alt="Steak grillé" />
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1421622548261-c45bfe178854?auto=format&fit=crop&w=1200&q=80" alt="Cocktail versé" />
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1504674926905-4f27e6f1c1e8?auto=format&fit=crop&w=1200&q=80" alt="Assiette gastronomique" />
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&fit=crop&w=1200&q=80" alt="Cuisson en cuisine" />
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=1200&q=80" alt="Grillades" />
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1504274066651-8d31a536b11a?auto=format&fit=crop&w=1200&q=80" alt="Salle de restaurant" />
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=1200&q=80" alt="Service au bar" />
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80" alt="Dîner convivial" />
-            </div>
+            @foreach (var image in Model.ImageUrls)
+            {
+                <div class="gallery-item">
+                    <img src="@image" alt="Photo du restaurant" />
+                </div>
+            }
         </div>
     </div>
 </section>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+}
