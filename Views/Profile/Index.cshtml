@@ -8,7 +8,8 @@
         <div>
             <p class="profile-hero__kicker">Espace client</p>
             <h1 class="profile-hero__title">Bonjour, @Model.DisplayName</h1>
-            <p class="profile-hero__subtitle">Retrouvez vos informations, vos réservations et vos factures en un seul endroit.</p>
+            <p class="profile-hero__subtitle">Retrouvez vos informations, vos réservations et vos factures en un seul
+                endroit.</p>
         </div>
         <div class="profile-hero__actions">
             <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
@@ -65,10 +66,12 @@
                     <article class="reservation-item">
                         <div class="reservation-item__header">
                             <div>
-                                <p class="reservation-item__date">@reservation.ReservationDate.ToString("dd MMMM yyyy à HH:mm")</p>
-                                <h3 class="reservation-item__title">@reservation.TableName <span class="text-muted">(@reservation.TableCategoryLabel)</span></h3>
+                                <p class="reservation-item__date">@reservation.ReservationDate.ToString("dd MMMM yyyy à HH:mm")
+                                </p>
+                                <h3 class="reservation-item__title">@reservation.TableName <span
+                                        class="text-muted">(@reservation.TableCategoryLabel)</span></h3>
                             </div>
-                             <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center gap-2">
                                 @if (reservation.IsCancelled)
                                 {
                                     <span class="badge rounded-pill text-bg-danger">Annulée</span>
@@ -125,11 +128,12 @@
                             </ul>
                         </div>
 
-                         @if (reservation.IsCancelled)
+                        @if (reservation.IsCancelled)
                         {
                             <div class="alert alert-warning mb-3" role="alert">
                                 <strong>Annulation enregistrée</strong><br />
-                                Frais (5%) : @reservation.CancellationFee.ToString("0.00") DH – Montant remboursé : @reservation.RefundAmount.ToString("0.00") DH<br />
+                                Frais (5%) : @reservation.CancellationFee.ToString("0.00") DH – Montant remboursé :
+                                @reservation.RefundAmount.ToString("0.00") DH<br />
                                 @if (reservation.CancelledAt.HasValue)
                                 {
                                     <span class="text-muted">Annulé le @reservation.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy à HH:mm")</span>
@@ -138,15 +142,25 @@
                         }
 
                         <div class="reservation-item__actions">
-                             @if (reservation.IsCancelled)
+                            @if (reservation.IsCancelled)
                             {
-                                <span class="badge rounded-pill text-bg-danger">Réservation annulée</span>
+                                <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+                                    <span class="badge rounded-pill text-bg-danger">Réservation annulée</span>
+                                    <form asp-action="Remove" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@reservation.Id" />
+                                        <button type="submit" class="btn btn-outline-secondary"
+                                            onclick="return confirm('Retirer cette réservation annulée de votre profil ?');">
+                                            Retirer de mes réservations
+                                        </button>
+                                    </form>
+                                </div>
                             }
                             else if (reservation.IsUpcoming)
                             {
                                 <form asp-action="Cancel" method="post">
                                     <input type="hidden" name="id" value="@reservation.Id" />
-                                     <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Voulez-vous annuler cette réservation ? Des frais de 5% seront appliqués.');">
+                                    <button type="submit" class="btn btn-outline-danger"
+                                        onclick="return confirm('Voulez-vous annuler cette réservation ? Des frais de 5% seront appliqués.');">
                                         Annuler
                                     </button>
                                 </form>

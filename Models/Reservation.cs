@@ -8,7 +8,7 @@ namespace RestoBooking.Models
     public enum OccasionType
     {
         Standard = 0,
-       [Display(Name = "Occasions personnelles & familiales")]
+        [Display(Name = "Occasions personnelles & familiales")]
         OccasionsPersonnellesFamiliales = 1,
 
         [Display(Name = "Célébrations et fêtes")]
@@ -78,7 +78,7 @@ namespace RestoBooking.Models
         [Column(TypeName = "decimal(10,2)")]
         public decimal TotalPrice { get; set; }
 
-         [Display(Name = "Annulée")]
+        [Display(Name = "Annulée")]
         public bool IsCancelled { get; set; }
 
         [Display(Name = "Date d'annulation")]
@@ -91,5 +91,9 @@ namespace RestoBooking.Models
         [Column(TypeName = "decimal(10,2)")]
         [Display(Name = "Montant remboursé")]
         public decimal RefundAmount { get; set; }
+
+        [Display(Name = "Masquée par l'utilisateur")]
+        public bool IsHiddenByUser { get; set; }
+
     }
 }
