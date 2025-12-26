@@ -14,7 +14,7 @@ namespace RestoBooking.Controllers
     public class ReservationController : Controller
     {
         private readonly AppDbContext _context;
-         private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailService _emailService;
         private static readonly Dictionary<TableCategory, decimal> TableCategoryMultipliers = new()
         {
@@ -70,7 +70,7 @@ namespace RestoBooking.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-           await LoadOptionsAsync();
+            await LoadOptionsAsync();
 
             var model = new Reservation();
             var user = await _userManager.GetUserAsync(User);
@@ -113,7 +113,7 @@ namespace RestoBooking.Controllers
                 }
             }
 
-            
+
 
             // 1️⃣ Heure obligatoire
             if (reservation.ReservationTime == null)
@@ -157,16 +157,16 @@ namespace RestoBooking.Controllers
                     reservation.ReservationDate = combinedDateTime;
                 }
             }
-                var table = await _context.Tables.FirstOrDefaultAsync(t => t.Id == reservation.TableId && t.IsActive);
+            var table = await _context.Tables.FirstOrDefaultAsync(t => t.Id == reservation.TableId && t.IsActive);
             if (table == null)
             {
                 ModelState.AddModelError(nameof(reservation.TableId), "La table sélectionnée n'est pas disponible.");
-            }        
+            }
 
-             EnsureOccasionPricingCoverage();
+            EnsureOccasionPricingCoverage();
             if (!OccasionPricesPerPerson.ContainsKey(reservation.Occasion))
             {
-               ModelState.AddModelError(nameof(reservation.Occasion), "Occasion invalide.");
+                ModelState.AddModelError(nameof(reservation.Occasion), "Occasion invalide.");
             }
 
             if (!ModelState.IsValid)
@@ -193,7 +193,7 @@ namespace RestoBooking.Controllers
                 ModelState.AddModelError(string.Empty,
                     "Cette table est déjà réservée à cette date et heure.");
 
-                  await LoadOptionsAsync();
+                await LoadOptionsAsync();
 
                 return View(reservation);
             }
@@ -202,33 +202,21 @@ namespace RestoBooking.Controllers
             _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
             var subject = "[RestoBooking] Confirmation de votre réservation";
-            var body = $@"
-                <h2>Bonjour {reservation.CustomerName},</h2>
-                <p>Merci pour votre réservation chez <strong>RestoBooking</strong>. Voici votre facture détaillée :</p>
-                <ul>
-                    <li><strong>Date et heure :</strong> {reservation.ReservationDate:dd/MM/yyyy HH:mm}</li>
-                    <li><strong>Nombre de personnes :</strong> {reservation.NumberOfPeople}</li>
-                    <li><strong>Table :</strong> {table.Name} ({GetDisplayName(table.Category)}) – {tablePricePerPerson:0.00} DH / personne</li>
-                    <li><strong>Occasion :</strong> {GetDisplayName(reservation.Occasion)} – {occasionPricePerPerson:0.00} DH / personne</li>
-                    <li><strong>Total estimé :</strong> {reservation.TotalPrice:0.00} DH</li>
-                </ul>
-                <p>Notes : {reservation.Notes}</p>
-                <p>Nous restons disponibles pour toute modification ou demande spécifique.</p>
-                <p>Cordialement,<br/>L'équipe RestoBooking</p>
-            ";
+            var body = BuildReservationConfirmationEmail(reservation, table, tablePricePerPerson, occasionPricePerPerson);
 
             await _emailService.SendEmail(reservation.CustomerEmail, subject, body);
 
-            return RedirectToAction("Success", new { id = reservation.Id });        }
+            return RedirectToAction("Success", new { id = reservation.Id });
+        }
 
         // ---------------------------------------------------------
         // PAGE DE SUCCÈS
         // ---------------------------------------------------------
         public async Task<IActionResult> Success(int id)
         {
-             var reservation = await _context.Reservations
-                .Include(r => r.Table)
-                .FirstOrDefaultAsync(r => r.Id == id);
+            var reservation = await _context.Reservations
+               .Include(r => r.Table)
+               .FirstOrDefaultAsync(r => r.Id == id);
 
             if (reservation == null)
             {
@@ -271,7 +259,7 @@ namespace RestoBooking.Controllers
                 .OrderByDescending(r => r.ReservationDate)
                 .ToListAsync();
 
-                await LoadOptionsAsync();
+            await LoadOptionsAsync();
 
             return View(reservations);
         }
@@ -305,7 +293,7 @@ namespace RestoBooking.Controllers
             if (reservation == null)
                 return NotFound();
 
-             await LoadOptionsAsync();
+            await LoadOptionsAsync();
             return View(reservation);
         }
 
@@ -374,7 +362,7 @@ namespace RestoBooking.Controllers
                 .Where(t => t.IsActive)
                 .ToListAsync();
 
-                if (!tables.Any())
+            if (!tables.Any())
             {
                 tables = new List<Table>
                 {
@@ -427,6 +415,34 @@ namespace RestoBooking.Controllers
             var member = typeof(TEnum).GetMember(value.ToString()).FirstOrDefault();
             var displayAttribute = member?.GetCustomAttribute<DisplayAttribute>();
             return displayAttribute?.Name ?? value.ToString();
+        }
+        
+        private static string BuildReservationConfirmationEmail(
+            Reservation reservation,
+            Table table,
+            decimal tablePricePerPerson,
+            decimal occasionPricePerPerson)
+        {
+            var notesSection = string.IsNullOrWhiteSpace(reservation.Notes)
+                ? "<em>Aucune note supplémentaire.</em>"
+                : reservation.Notes.Trim();
+
+            return $@"
+                <div style=\"font-family: Arial, sans-serif; color: #1f2937;\">
+                    <h2 style=\"color: #111827;\">Bonjour {reservation.CustomerName},</h2>
+                    <p>Merci d'avoir réservé chez <strong>RestoBooking</strong> ! Ce message est envoyé automatiquement depuis notre compte Gmail de confirmation.</p>
+                    <p><strong>Récapitulatif de votre réservation :</strong></p>
+                    <ul>
+                        <li><strong>Date et heure :</strong> {reservation.ReservationDate:dd/MM/yyyy HH:mm}</li>
+                        <li><strong>Nombre de personnes :</strong> {reservation.NumberOfPeople}</li>
+                        <li><strong>Table :</strong> {table.Name} ({GetDisplayName(table.Category)}) – {tablePricePerPerson:0.00} DH / personne</li>
+                        <li><strong>Occasion :</strong> {GetDisplayName(reservation.Occasion)} – {occasionPricePerPerson:0.00} DH / personne</li>
+                        <li><strong>Total estimé :</strong> {reservation.TotalPrice:0.00} DH</li>
+                    </ul>
+                    <p><strong>Notes :</strong> {notesSection}</p>
+                    <p style=\"margin-top: 16px;\">Pour toute question ou modification, répondez simplement à cet email : nous restons disponibles.</p>
+                    <p style=\"margin-top: 16px;\">À très vite,<br/>L'équipe RestoBooking</p>
+                </div>";
         }
     }
 }
