@@ -16,6 +16,7 @@ namespace RestoBooking.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailService _emailService;
+        private const string ReservationConfirmationSubject = "[RestoBooking] Confirmation de votre réservation";
         private static readonly Dictionary<TableCategory, decimal> TableCategoryMultipliers = new()
         {
             { TableCategory.Standard, 1.35m },
@@ -201,10 +202,9 @@ namespace RestoBooking.Controllers
             // 4️⃣ Sauvegarde + email
             _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
-            var subject = "[RestoBooking] Confirmation de votre réservation";
             var body = BuildReservationConfirmationEmail(reservation, table, tablePricePerPerson, occasionPricePerPerson);
 
-            await _emailService.SendEmail(reservation.CustomerEmail, subject, body);
+            await _emailService.SendEmail(reservation.CustomerEmail, ReservationConfirmationSubject, body);
 
             return RedirectToAction("Success", new { id = reservation.Id });
         }
@@ -416,7 +416,6 @@ namespace RestoBooking.Controllers
             var displayAttribute = member?.GetCustomAttribute<DisplayAttribute>();
             return displayAttribute?.Name ?? value.ToString();
         }
-        
         private static string BuildReservationConfirmationEmail(
             Reservation reservation,
             Table table,
@@ -428,21 +427,22 @@ namespace RestoBooking.Controllers
                 : reservation.Notes.Trim();
 
             return $@"
-                <div style=\"font-family: Arial, sans-serif; color: #1f2937;\">
-                    <h2 style=\"color: #111827;\">Bonjour {reservation.CustomerName},</h2>
-                    <p>Merci d'avoir réservé chez <strong>RestoBooking</strong> ! Ce message est envoyé automatiquement depuis notre compte Gmail de confirmation.</p>
-                    <p><strong>Récapitulatif de votre réservation :</strong></p>
-                    <ul>
-                        <li><strong>Date et heure :</strong> {reservation.ReservationDate:dd/MM/yyyy HH:mm}</li>
-                        <li><strong>Nombre de personnes :</strong> {reservation.NumberOfPeople}</li>
-                        <li><strong>Table :</strong> {table.Name} ({GetDisplayName(table.Category)}) – {tablePricePerPerson:0.00} DH / personne</li>
-                        <li><strong>Occasion :</strong> {GetDisplayName(reservation.Occasion)} – {occasionPricePerPerson:0.00} DH / personne</li>
-                        <li><strong>Total estimé :</strong> {reservation.TotalPrice:0.00} DH</li>
-                    </ul>
-                    <p><strong>Notes :</strong> {notesSection}</p>
-                    <p style=\"margin-top: 16px;\">Pour toute question ou modification, répondez simplement à cet email : nous restons disponibles.</p>
-                    <p style=\"margin-top: 16px;\">À très vite,<br/>L'équipe RestoBooking</p>
-                </div>";
+                
+                <h2>Confirmation de votre réservation</h2>
+                <p>Bonjour {reservation.CustomerName},</p>
+                <p>Merci d'avoir réservé une table chez RestoBooking ! Voici les détails de votre réservation :</p>
+                <ul>
+                    <li><strong>Date et Heure :</strong> {reservation.ReservationDate:dd/MM/yyyy HH:mm}</li>
+                    <li><strong>Table :</strong> {table.Name} ({GetDisplayName(table.Category)})</li>
+                    <li><strong>Nombre de personnes :</strong> {reservation.NumberOfPeople}</li>
+                    <li><strong>Prix par personne (Table) :</strong> {tablePricePerPerson:C}</li>
+                    <li><strong>Prix par personne (Occasion) :</strong> {occasionPricePerPerson:C}</li>
+                    <li><strong>Total à payer :</strong> {reservation.TotalPrice:C}</li>
+                    <li><strong>Notes supplémentaires :</strong> {notesSection}</li>
+                </ul>
+                <p>Nous avons hâte de vous accueillir ! Si vous avez des questions, n'hésitez pas à nous contacter.</p>
+                <p>Cordialement,<br/>L'équipe RestoBooking</p>
+            ";
         }
     }
-}
+}   
