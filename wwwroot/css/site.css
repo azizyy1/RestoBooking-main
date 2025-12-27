@@ -437,6 +437,21 @@ body {
     margin-bottom: 24px;
 }
 
+.event-gallery-visual {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+
+.event-gallery-visual img {
+    width: 100%;
+    max-width: 1040px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    object-fit: cover;
+}
+
 .event-gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
