@@ -70,7 +70,7 @@ public class HomeController : Controller
 
     private IEnumerable<string> GetGalleryImages()
     {
-        var galleryPath = Path.Combine(_environment.WebRootPath, "videos");
+        var galleryPath = Path.Combine(_environment.WebRootPath, "oriantal");
         Directory.CreateDirectory(galleryPath);
 
         var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".webp" };
@@ -79,7 +79,7 @@ public class HomeController : Controller
            .Where(file => allowedExtensions.Contains(Path.GetExtension(file).ToLowerInvariant()))
            .Select(Path.GetFileName)
            .Where(file => !string.IsNullOrWhiteSpace(file))
-           .Select(file => Url.Content($"~/videos/{file}"))
+           .Select(file => Url.Content($"~/oriantal/{file}"))
            .ToList();
     }
     public IActionResult Contact()
