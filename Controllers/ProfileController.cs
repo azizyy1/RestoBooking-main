@@ -176,11 +176,11 @@ namespace RestoBooking.Controllers
 
             var cancellationDate = reservation.CancelledAt?.ToLocalTime().ToString("dd/MM/yyyy à HH:mm") ?? "-";
 
-            var subject = "[RestoBooking] Confirmation d'annulation de votre réservation";
+            var subject = "[Layali Lounge] Confirmation d'annulation de votre réservation";
             var body = $@"
                 <h2>Bonjour {reservation.CustomerName},</h2>
                 <p><strong>Annulation enregistrée</strong></p>
-                <p>Votre réservation chez <strong>RestoBooking</strong> a bien été annulée.</p>
+                <p>Votre réservation chez <strong>Layali Lounge</strong> a bien été annulée.</p>
                 <ul>
                     <li><strong>Date et heure initiales :</strong> {reservation.ReservationDate:dd/MM/yyyy HH:mm}</li>
                     <li><strong>Table :</strong> {reservation.Table?.Name ?? "Table"} ({(reservation.Table != null ? GetDisplayName(reservation.Table.Category) : "")})</li>

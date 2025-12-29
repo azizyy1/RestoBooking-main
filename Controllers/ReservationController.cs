@@ -17,7 +17,7 @@ namespace RestoBooking.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailService _emailService;
-        private const string ReservationConfirmationSubject = "[RestoBooking] Confirmation de votre réservation";
+        private const string ReservationConfirmationSubject = "[Layali Lounge] Confirmation de votre réservation";
         private readonly string? _notificationEmail;
 
         private static readonly Dictionary<TableCategory, decimal> TableCategoryMultipliers = new()
@@ -42,12 +42,12 @@ namespace RestoBooking.Controllers
             { OccasionType.ReservationVIP, 320m }
         };
 
-            public ReservationController(
-            AppDbContext context,
-            IEmailService emailService,
-            UserManager<IdentityUser> userManager,
-            IOptions<EmailSettings> emailOptions)       
-             {
+        public ReservationController(
+        AppDbContext context,
+        IEmailService emailService,
+        UserManager<IdentityUser> userManager,
+        IOptions<EmailSettings> emailOptions)
+        {
             _context = context;
             _userManager = userManager;
             _emailService = emailService;
@@ -217,7 +217,7 @@ namespace RestoBooking.Controllers
             if (!string.IsNullOrWhiteSpace(_notificationEmail))
             {
                 var notificationBody = BuildReservationNotificationEmail(reservation, table, tablePricePerPerson, occasionPricePerPerson);
-                await _emailService.SendEmail(_notificationEmail, "[RestoBooking] Nouvelle réservation reçue", notificationBody);
+                await _emailService.SendEmail(_notificationEmail, "[Layali Lounge] Nouvelle réservation reçue", notificationBody);
             }
 
             return RedirectToAction("Success", new { id = reservation.Id });
@@ -444,7 +444,7 @@ namespace RestoBooking.Controllers
                 
                 <h2>Confirmation de votre réservation</h2>
                 <p>Bonjour {reservation.CustomerName},</p>
-                <p>Merci d'avoir réservé une table chez RestoBooking ! Voici les détails de votre réservation :</p>
+                <p>Merci d'avoir réservé une table chez Layali Lounge ! Voici les détails de votre réservation :</p>
                 <ul>
                     <li><strong>Date et Heure :</strong> {reservation.ReservationDate:dd/MM/yyyy HH:mm}</li>
                     <li><strong>Table :</strong> {table.Name} ({GetDisplayName(table.Category)})</li>
@@ -455,7 +455,7 @@ namespace RestoBooking.Controllers
                     <li><strong>Notes supplémentaires :</strong> {notesSection}</li>
                 </ul>
                 <p>Nous avons hâte de vous accueillir ! Si vous avez des questions, n'hésitez pas à nous contacter.</p>
-                <p>Cordialement,<br/>L'équipe RestoBooking</p>
+                <p>Cordialement,<br/>L'équipe Layali Lounge.</p>
             ";
         }
         private static string BuildReservationNotificationEmail(
@@ -470,7 +470,7 @@ namespace RestoBooking.Controllers
 
             return $@"
                 <h2>Nouvelle réservation enregistrée</h2>
-                <p>Une nouvelle réservation a été créée via RestoBooking.</p>
+                <p>Une nouvelle réservation a été créée via Layali Lounge.</p>
                 <ul>
                     <li><strong>Client :</strong> {reservation.CustomerName} ({reservation.CustomerEmail})</li>
                     <li><strong>Téléphone :</strong> {reservation.CustomerPhone}</li>
