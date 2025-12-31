@@ -48,58 +48,58 @@
             <th>Personnes</th>
             <th>Notes</th>
             <th>Total / Remboursement</th>
-            <th style="width: 220px;">Actions</th>
+            <th style="width: 140px;">Actions</th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var r in Model)
-    {
-        <tr>
-            <td>@r.CustomerName</td>
-            <td>@r.CustomerEmail</td>
-            <td>@r.CustomerPhone</td>
-            <td>@r.Table?.Name</td>
-            <td>@r.ReservationDate.ToString("dd/MM/yyyy HH:mm")</td>
-            <td>
-                @if (r.IsCancelled)
-                {
-                    <span class="badge text-bg-danger">Annulée</span>
-                    @if (r.CancelledAt.HasValue)
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.CustomerName</td>
+                <td>@r.CustomerEmail</td>
+                <td>@r.CustomerPhone</td>
+                <td>@r.Table?.Name</td>
+                <td>@r.ReservationDate.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    @if (r.IsCancelled)
                     {
-                        <div class="text-muted small">@r.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                        <span class="badge text-bg-danger">Annulée</span>
+                        @if (r.CancelledAt.HasValue)
+                        {
+                            <div class="text-muted small">@r.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                        }
                     }
-                }
-                else if (r.ReservationDate >= DateTime.Now)
-                {
-                    <span class="badge text-bg-success">À venir</span>
-                }
-                else
-                {
-                    <span class="badge text-bg-secondary">Passée</span>
-                }
-            </td>
-            <td>@r.NumberOfPeople</td>
-            <td>@r.Notes</td>
-            <td>
-                <div><strong>@r.TotalPrice.ToString("0.00") DH</strong></div>
-                @if (r.IsCancelled)
-                {
-                    <div class="small text-danger">Frais (5%) : @r.CancellationFee.ToString("0.00") DH</div>
-                    <div class="small text-success">Remboursé : @r.RefundAmount.ToString("0.00") DH</div>
-                }
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info me-1">
-                    Voir
-                </a>
-                <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-warning me-1">
-                    Modifier
-                </a>
-                <a asp-action="Delete" asp-route-id="@r.Id" class="btn btn-sm btn-danger">
-                    Supprimer
-                </a>
-            </td>
-        </tr>
-    }
+                    else if (r.ReservationDate >= DateTime.Now)
+                    {
+                        <span class="badge text-bg-success">À venir</span>
+                    }
+                    else
+                    {
+                        <span class="badge text-bg-secondary">Passée</span>
+                    }
+                </td>
+                <td>@r.NumberOfPeople</td>
+                <td>@r.Notes</td>
+                <td>
+                    <div><strong>@r.TotalPrice.ToString("0.00") DH</strong></div>
+                    @if (r.IsCancelled)
+                    {
+                        <div class="small text-danger">Frais (5%) : @r.CancellationFee.ToString("0.00") DH</div>
+                        <div class="small text-success">Remboursé : @r.RefundAmount.ToString("0.00") DH</div>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info me-1">
+                        Voir
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-warning me-1">
+                        Modifier
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@r.Id" class="btn btn-sm btn-danger">
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

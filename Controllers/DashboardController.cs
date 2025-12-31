@@ -6,7 +6,7 @@ using RestoBooking.Models.ViewModels;
 
 namespace RestoBooking.Controllers
 {
-    [Authorize] // tu peux aussi restreindre aux admins plus tard
+    [Authorize(Roles = "Admin")]
     public class DashboardController : Controller
     {
         private readonly AppDbContext _context;

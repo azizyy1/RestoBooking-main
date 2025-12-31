@@ -300,15 +300,9 @@ namespace RestoBooking.Controllers
         // ---------------------------------------------------------
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
-            var reservation = await _context.Reservations.FindAsync(id);
-
-            if (reservation == null)
-                return NotFound();
-
-            await LoadOptionsAsync();
-            return View(reservation);
+            return Forbid();
         }
 
         // ---------------------------------------------------------
@@ -317,22 +311,9 @@ namespace RestoBooking.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Reservation reservation)
+        public IActionResult Edit(int id, Reservation reservation)
         {
-            if (id != reservation.Id)
-                return BadRequest();
-
-            if (!ModelState.IsValid)
-            {
-                await LoadOptionsAsync();
-
-                return View(reservation);
-            }
-
-            _context.Update(reservation);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Admin");
+            return Forbid();
         }
 
         // ---------------------------------------------------------
@@ -340,16 +321,9 @@ namespace RestoBooking.Controllers
         // ---------------------------------------------------------
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
-            var reservation = await _context.Reservations
-                .Include(r => r.Table)
-                .FirstOrDefaultAsync(r => r.Id == id);
-
-            if (reservation == null)
-                return NotFound();
-
-            return View(reservation);
+            return Forbid();
         }
 
         // ---------------------------------------------------------
@@ -358,17 +332,9 @@ namespace RestoBooking.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var reservation = await _context.Reservations.FindAsync(id);
-
-            if (reservation == null)
-                return NotFound();
-
-            _context.Reservations.Remove(reservation);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Admin");
+            return Forbid();
         }
         private async Task LoadOptionsAsync()
         {
