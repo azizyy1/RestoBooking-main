@@ -7,6 +7,41 @@
 
 <h2>Tableau de bord</h2>
 
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-title">Tables</h6>
+                <p class="display-6">@Model.TotalTables</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-title">Plats</h6>
+                <p class="display-6">@Model.TotalMenuItems</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-title">Réservations</h6>
+                <p class="display-6">@Model.TotalReservations</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-title">Aujourd'hui</h6>
+                <p class="display-6">@Model.TodayReservations</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-6">
         <h4>Plats les plus demandés</h4>
@@ -18,6 +53,13 @@
     </div>
 </div>
 
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h4>Tendance des réservations</h4>
+        <canvas id="reservationsChart"></canvas>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const dishesLabels = @Html.Raw(JsonSerializer.Serialize(Model.TopDishesLabels));
@@ -25,6 +67,9 @@
 
     const tablesLabels = @Html.Raw(JsonSerializer.Serialize(Model.TopTablesLabels));
     const tablesValues = @Html.Raw(JsonSerializer.Serialize(Model.TopTablesValues));
+
+    const reservationsLabels = @Html.Raw(JsonSerializer.Serialize(Model.ReservationTrendsLabels));
+    const reservationsValues = @Html.Raw(JsonSerializer.Serialize(Model.ReservationTrendsValues));
 
     new Chart(document.getElementById('dishesChart'), {
         type: 'bar',
@@ -45,6 +90,28 @@
                 label: 'Nombre de réservations',
                 data: tablesValues
             }]
+        }
+    });
+    new Chart(document.getElementById('reservationsChart'), {
+        type: 'line',
+        data: {
+            labels: reservationsLabels,
+            datasets: [{
+                label: 'Réservations mensuelles',
+                data: reservationsValues,
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.15)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
         }
     });
 </script>

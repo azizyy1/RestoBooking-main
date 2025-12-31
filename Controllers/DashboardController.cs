@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,14 @@ namespace RestoBooking.Controllers
         public async Task<IActionResult> Index()
         {
             var vm = new DashboardViewModel();
+
+            vm.TotalTables = await _context.Tables.CountAsync();
+            vm.TotalMenuItems = await _context.MenuItems.CountAsync();
+            vm.TotalReservations = await _context.Reservations.CountAsync(r => !r.IsCancelled);
+
+            var today = DateTime.Today;
+            vm.TodayReservations = await _context.Reservations
+                .CountAsync(r => !r.IsCancelled && r.ReservationDate.Date == today);
 
             // 🔹 Plats les plus commandés
             var dishes = await _context.ReservationMenuItems
@@ -51,6 +60,28 @@ namespace RestoBooking.Controllers
 
             vm.TopTablesLabels = tables.Select(t => t.Label).ToList();
             vm.TopTablesValues = tables.Select(t => t.Count).ToList();
+
+            var startDate = new DateTime(today.Year, today.Month, 1).AddMonths(-5);
+            var reservationTrends = await _context.Reservations
+                .Where(r => !r.IsCancelled && r.ReservationDate >= startDate)
+                .GroupBy(r => new { r.ReservationDate.Year, r.ReservationDate.Month })
+                .Select(g => new
+                {
+                    g.Key.Year,
+                    g.Key.Month,
+                    Count = g.Count()
+                })
+                .OrderBy(g => g.Year)
+                .ThenBy(g => g.Month)
+                .ToListAsync();
+
+            vm.ReservationTrendsLabels = reservationTrends
+                .Select(rt => new DateTime(rt.Year, rt.Month, 1).ToString("MMM yy"))
+                .ToList();
+
+            vm.ReservationTrendsValues = reservationTrends
+                .Select(rt => rt.Count)
+                .ToList();
 
             return View(vm);
         }

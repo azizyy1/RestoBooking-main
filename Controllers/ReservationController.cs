@@ -76,6 +76,7 @@ namespace RestoBooking.Controllers
         // ---------------------------------------------------------
         // CREATE (GET)  -> accessible à tout le monde (clients)
         // ---------------------------------------------------------
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -99,6 +100,7 @@ namespace RestoBooking.Controllers
         // ---------------------------------------------------------
         // CREATE (POST)
         // ---------------------------------------------------------
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Reservation reservation)
