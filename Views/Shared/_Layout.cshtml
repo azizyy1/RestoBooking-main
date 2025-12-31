@@ -28,40 +28,9 @@
 
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav mx-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home"
-                                asp-action="SpecialEvents">Événements</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Gallery">Galerie</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Portfolio">Portfolio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Reservation" asp-action="Create">
-                                Réserver une table
-                            </a>
-                        </li>
                         @if (User.IsInRole("Admin"))
                         {
-                            <ul class="navbar-nav ms-3">
-                                <li class="nav-item">
-                                    <a class="nav-link text-warning" asp-controller="Reservation" asp-action="Admin">
-                                        Dashboard
-                                    </a>
-                                </li>
-                            </ul>
+
                         }
 
 
