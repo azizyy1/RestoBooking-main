@@ -300,9 +300,21 @@ namespace RestoBooking.Controllers
         // ---------------------------------------------------------
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return Forbid();
+            var reservation = await _context.Reservations
+               .Include(r => r.Table)
+               .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            // Préparer les tables pour la liste déroulante
+            await LoadOptionsAsync();
+
+            return View(reservation);
         }
 
         // ---------------------------------------------------------
@@ -311,9 +323,54 @@ namespace RestoBooking.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Reservation reservation)
+        public async Task<IActionResult> Edit(int id, Reservation reservation)
         {
-            return Forbid();
+            if (id != reservation.Id)
+            {
+                return BadRequest();
+            }
+
+            // Nettoyage des champs principaux
+            reservation.CustomerName = reservation.CustomerName?.Trim() ?? string.Empty;
+            reservation.CustomerEmail = reservation.CustomerEmail?.Trim() ?? string.Empty;
+            reservation.CustomerPhone = reservation.CustomerPhone?.Trim() ?? string.Empty;
+
+            var table = await _context.Tables.FirstOrDefaultAsync(t => t.Id == reservation.TableId && t.IsActive);
+            if (table == null)
+            {
+                ModelState.AddModelError(nameof(reservation.TableId), "La table sélectionnée n'est pas disponible.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                await LoadOptionsAsync();
+                return View(reservation);
+            }
+
+            var existingReservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == id);
+            if (existingReservation == null)
+            {
+                return NotFound();
+            }
+
+            existingReservation.CustomerName = reservation.CustomerName;
+            existingReservation.CustomerEmail = reservation.CustomerEmail;
+            existingReservation.CustomerPhone = reservation.CustomerPhone;
+            existingReservation.ReservationDate = reservation.ReservationDate;
+            existingReservation.NumberOfPeople = reservation.NumberOfPeople;
+            existingReservation.TableId = reservation.TableId;
+            existingReservation.Notes = reservation.Notes;
+
+            table!.BasePricePerPerson = table.BasePricePerPerson <= 0 ? 220m : table.BasePricePerPerson;
+            var tablePricePerPerson = table.BasePricePerPerson * TableCategoryMultipliers[table.Category];
+            var occasionPricePerPerson = GetOccasionPrice(existingReservation.Occasion);
+            var total = existingReservation.NumberOfPeople * (tablePricePerPerson + occasionPricePerPerson);
+
+            existingReservation.TotalPrice = Math.Round(total, 2, MidpointRounding.AwayFromZero);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Admin));
         }
 
         // ---------------------------------------------------------
@@ -321,9 +378,18 @@ namespace RestoBooking.Controllers
         // ---------------------------------------------------------
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return Forbid();
+            var reservation = await _context.Reservations
+                .Include(r => r.Table)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            return View(reservation);
         }
 
         // ---------------------------------------------------------
@@ -332,9 +398,19 @@ namespace RestoBooking.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            return Forbid();
+            var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == id);
+
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            _context.Reservations.Remove(reservation);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Admin));
         }
         private async Task LoadOptionsAsync()
         {
