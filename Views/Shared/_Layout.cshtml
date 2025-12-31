@@ -26,15 +26,11 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="mainNavbar">
-                    <ul class="navbar-nav me-auto">
+                <div class="collapse navbar-collapse align-items-center" id="mainNavbar">
+                    <ul class="navbar-nav mx-auto">
                         @if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-warning" asp-controller="Reservation" asp-action="Admin">
-                                    Dashboard
-                                </a>
-                            </li>
+
                         }
                         else
                         {
@@ -64,7 +60,7 @@
                                 </a>
                             </li>
                         }
-                          </ul>
+                    </ul>
 
                     <div class="ms-auto d-flex align-items-center">
                         <partial name="_LoginPartial" />

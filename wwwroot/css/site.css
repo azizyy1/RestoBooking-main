@@ -70,7 +70,18 @@ html {
     color: #f5a623;
 }
 
-.main-navbar .navbar-nav.ms-auto .nav-link {
+.main-navbar .navbar-collapse {
+    display: flex;
+    align-items: center;
+}
+
+.main-navbar .navbar-nav {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.main-navbar .navbar-nav .nav-link {
+
     font-size: 0.95rem;
 }
 
