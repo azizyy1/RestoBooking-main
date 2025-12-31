@@ -27,7 +27,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="mainNavbar">
-                    <ul class="navbar-nav mx-auto">
+                    <ul class="navbar-nav me-auto">
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
@@ -64,9 +64,11 @@
                                 </a>
                             </li>
                         }
-                        <div class="navbar-nav ms-auto">
-                            <partial name="_LoginPartial" />
-                        </div>
+                          </ul>
+
+                    <div class="ms-auto d-flex align-items-center">
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </nav>
